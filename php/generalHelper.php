@@ -53,7 +53,7 @@ function GetUserData($id) {
     $req->execute([
         ":id" => $id
     ]);
-    return $req->fetchAll(PDO::FETCH_ASSOC);
+    return $req->fetch(PDO::FETCH_ASSOC);
 }
 
 

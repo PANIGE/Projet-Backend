@@ -19,16 +19,19 @@
         $id = GetIDFromUsername($Name);
         if ($id == -1) {
             http_response_code(302);
-            header('location:/login.php?er=Username%20or%20password%20doesn%5C%27t%20match');
+            header('location:/login?er=Username%20or%20password%20doesn%5C%27t%20match');
+            die();
         }
 
-
+        
         $DBPW = GetUserData($id)["pw_hash"];
+
         $pass = password_verify($PW, $DBPW);
 
         if (!$pass) {
             http_response_code(302);
-            header('location:/login.php?er=Username%20or%20password%20doesn%5C%27t%20match');
+            header('location:/login?er=Username%20or%20password%20doesn%5C%27t%20match');
+            die();
         }
 
 
@@ -42,11 +45,11 @@
                 ":tok"   => $token,
             ]);
             $a = $query->fetchAll();
-            if ($a->rowCount() == 0) {
+            if ($query->rowCount() == 0) {
                 $found = true;
             }
         }
-        $query = $pdo->prepare('INSERT INTO `ultraverse`.`webtokens` (`UID`, `token`) VALUES (:tok, :id);');
+        $query = $pdo->prepare('INSERT INTO `ultraverse`.`webtokens` (`UID`, `token`) VALUES (:id, :tok);');
         $query->execute([
             ":tok"   => $token,
             ":id"    => $id,
@@ -71,7 +74,7 @@
 							<input tabindex="1" type="text" name="username" placeholder="Username"" required pattern="^[A-Za-z0-9 _\[\]-]{2,15}$">
 						</div>
 						<div class="field">
-							<label>Password (at least 8 characters)"</label>
+							<label>Password"</label>
 							<input tabindex="2" type="password" name="password" placeholder="Password"" required pattern="^.{8,}$">
 						</div>
 		

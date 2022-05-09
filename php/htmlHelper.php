@@ -18,7 +18,6 @@
                echo "<title> ".$name." - Ultraverse</title>";
                echo <<<EOL
                <link rel="icon" href="/static/favicon.ico">
-               <link rel="manifest" href="/static/manifest.json">
                <meta name="msapplication-TileColor" content="#ffffff">
                <meta property="og:type" content="website">
                <meta name="description" content="osu!Aeris is the first osu! alternative server fully working with delta_t PP calculation, come and try it yourself, we also do tournaments! on our discord">
@@ -31,13 +30,13 @@
                <meta name="language" content="English">
                <link rel="stylesheet" type="text/css" href="/static/semantic.css">
                <link rel="stylesheet" type="text/css" href="/static/Aeris.css">
-               <link rel="stylesheet" type="text/css" href="/static/jquery.lsxemojipicker.css?v=1">
                <link rel="stylesheet" type="text/css" href="/static/fontAwesome.css">
                <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
                <link href="https://kit-free.fontawesome.com/releases/latest/css/free-v4-shims.min.css" media="all" rel="stylesheet">
                <link href="https://kit-free.fontawesome.com/releases/latest/css/free-v4-font-face.min.css" media="all" rel="stylesheet">
                <link href="https://kit-free.fontawesome.com/releases/latest/css/free.min.css" media="all" rel="stylesheet">
                <script src="/static/aeris.js?v=1.4" type="text/javascript"></script>
+               <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
             
                <body>
                <div class="background-image" 
@@ -68,13 +67,18 @@
 
 /* ------------------------------- RIGHT ITEMS ------------------------------ */
                if (!IsLog()) {
-                  Item("Login", "/login.php");
-                  Item("Register", "/register.php");
+                  Item("Login", "/login");
+                  Item("Register", "/register");
                }
                else {
-                  Item("Logout", "/logout.php");
-               }
+                  echo '<div class="ui dropdown item avatar-div"><a></a><img id="avatar" class="ui avatar image reactiveImages" src="/avatars/'.GetID().'"><div class="menu">';
+                     Item("Profile", "/users/".GetID());
+                     Item("Settings", "/settings");
+                     Item("Log out", "/logout");
+                  echo '</div></div>';
 
+                  
+               }
 /* -------------------------------------------------------------------------- */
 
             echo <<<EOL
@@ -164,8 +168,7 @@
           </div>
        </div>
     </div>
-    <script src="/static/dist.min.js?1646948307238861004" type="text/javascript"></script>
-    <script src="/static/timeago-locale/jquery.timeago.fr.js" type="text/javascript"></script>
+    <script src="/static/dist.min.js" type="text/javascript"></script>
  
 
 </body></div></html>

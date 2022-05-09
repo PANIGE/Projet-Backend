@@ -26,20 +26,20 @@
         $Dupe = $q->rowCount() > 0; //true = il existe un autre mec
         if ($Dupe) {
             http_response_code(302);
-            header('location:/register.php?er=Username%20already%20taken');
+            header('location:/register?er=Username%20already%20taken');
             die();
         }
         
         //Check si les mdp sont les memes
         if ($PW != $PWC) {
             http_response_code(302);
-            header('location:/register.php?er=Passwords%20does%20not%20match');
+            header('location:/register?er=Passwords%20does%20not%20match');
             die();
         }
 
         if ($PW == "" || $PWC == "") {
             http_response_code(302);
-            header('location:/register.php?er=Please%20make%20a%20password,%20it\'s%20not%20safe%20to%20go%20unprotected');
+            header('location:/register?er=Please%20make%20a%20password,%20it\'s%20not%20safe%20to%20go%20unprotected');
             die();
         }
         

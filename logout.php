@@ -5,7 +5,7 @@
         $token = $_COOKIE['Authorisation'];
         setcookie('Authorisation', '', time() - 3600, '/');
         $r = $pdo->prepare("DELETE FROM webtokens WHERE token = :tok");
-        $r.execute([
+        $r->execute([
             ":tok" => $token
         ]);
         http_response_code(302);
