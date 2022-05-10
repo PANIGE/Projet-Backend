@@ -9,7 +9,7 @@
         $inserer_message->execute(array($message, GetID(), "#general"));
     }
 ?>
-<div style="height: 50%;overflow: scroll;">
+<div id="chatdiv" style="height: 80%;overflow: hidden;">
     <div id="message"></div>
 </div>
  <form id="chat" class="ui form" method="post" action="/chat.php" >
@@ -26,6 +26,9 @@
         setInterval('load_message()',500);
         function load_message() {
             $('#message').load('load_chat.php');
+            $('#chatdiv').animate({
+                scrollTop: 90000
+            },0);
         }
         let form = $("#chat")
         form.submit(function(){
