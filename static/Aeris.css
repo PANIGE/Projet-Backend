@@ -1831,10 +1831,23 @@ background: #34303d!important;
 	margin-bottom: auto;
 }
 
+.channel-message-tab {
+	background:var(--segment-bg);
+	padding:1em;
+	display:flex;
+	flex-direction:row;
+	margin: 0.5em 0;
+}
+
 .channel-message-box {
-	min-height: 5em;
+	min-height: 3em;
 	display: flex;
-	margin: 1em 0;
+	flex-direction:column;
+	margin: 1em 1em;
+}
+
+.channel-message-box h4 {
+	margin: 0;
 }
 
 .channel-message-bubble {
@@ -1850,7 +1863,8 @@ background: #34303d!important;
 }
 
 .channel-message-avatar {
-	width: 10%;
+	width: 5em;
+	height: 5em;
 	border-radius: 100%;
 }
 

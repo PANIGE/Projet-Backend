@@ -1,12 +1,20 @@
 <?php
-require_once("./php/sql.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
 
 function IsLog() {
     return GetID() != -1;
 }
 
+function RequireLogin() {
+    if (!IsLog()) {
+        http_response_code(302);
+        header("location:/login?redir=".$_SERVER['REQUEST_URI']."&ew=You%20must%20login%20to%20continue");
+        die();
+    }
+}
+
 function GetID() {
-    require("./php/sql.php");
+    require($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
 
     if (!isset($_COOKIE["Authorisation"])) return -1;
     $req = $pdo->prepare("SELECT UID FROM webtokens WHERE token = :tok");
@@ -35,7 +43,7 @@ function GetSafeUsername($username) {
 }
 
 function GetIDFromUsername($username) {
-    require("./php/sql.php");
+    require($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
     
     $req = $pdo->prepare("SELECT ID FROM users WHERE username_safe = :usr");
     $req->execute([
@@ -47,7 +55,7 @@ function GetIDFromUsername($username) {
 }
 
 function GetUserData($id) {
-    require("./php/sql.php");
+    require($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
 
     $req = $pdo->prepare("SELECT * FROM users WHERE id = :id");
     $req->execute([

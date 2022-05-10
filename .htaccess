@@ -3,6 +3,8 @@ ErrorDocument 500 /500.php
 
 RewriteEngine On
 RewriteRule ^avatars/(.*) /avatars.php?id=$1 [L]
+RewriteRule ^banners/(.*) /banners.php?id=$1 [L]
+RewriteRule ^users/(.*) /profile.php?id=$1 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]

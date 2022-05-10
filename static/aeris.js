@@ -17,13 +17,18 @@ function hamburger() {
     menu.setAttribute("class", "big x icon")
   }
 }
-var color = "purple"
-var hue = -90
 var navbar = document.getElementById('navbar')
 var navImg = document.getElementById('navimg')
 var avatar = document.getElementById('avatar')
 var logo = document.getElementById('logo')
-function init(color) {
+function init() {
+
+    navbar = document.getElementById('navbar')
+    navImg = document.getElementById('navimg')
+    avatar = document.getElementById('avatar')
+    logo = document.getElementById('logo')
+
+
     if ($(window).width() < $(window).height()) {
     
     navbar.classList.add('dropped')
@@ -36,8 +41,10 @@ function init(color) {
     navbaritems = document.getElementById("navbarItems");
     }
 }
-window.onscroll = function() {
 
+
+
+window.onscroll = function() {
   // pageYOffset or scrollY
   if (window.pageYOffset > 0 || $(window).width() < $(window).height()) {
     navbar.classList.add("navbar-background")
@@ -173,20 +180,19 @@ if (query == '') {
   searchitems.innerHTML = "No input";
 } else {
   searchitems.innerHTML = "Loading...";
-  const response = await fetch( "/api/v1/users/lookup?name=" + query);
+  const response = await fetch( "/api/search?q=" + query);
   const Data = await response.json();
-  
-  if (Data["users"]) {
+  if (Data.length > 0) {
     searchitems.innerHTML = "";
-    Data["users"].forEach(element => {
+    Data.forEach(element => {
       var anchor = searchitems.appendChild(document.createElement('a'));
-      anchor.setAttribute("href", "/u/"+element.id);
+      anchor.setAttribute("href", "/users/"+element.ID);
       var maindiv = anchor.appendChild(document.createElement('div'));
       maindiv.setAttribute("class","players-search-tab")
       var imgdiv = maindiv.appendChild(document.createElement('div'));
       imgdiv.setAttribute("class", "avatar")
       var img = imgdiv.appendChild(document.createElement('img'));
-      img.setAttribute("src", "https://a.aeris-dev.pw/"+element.id)
+      img.setAttribute("src", "/avatars/"+element.ID)
       var h3 = maindiv.appendChild(document.createElement('h3'));
       h3.innerHTML = element.username
     })
@@ -231,3 +237,6 @@ soundPlayer.currentTime = 0;
 icon = document.getElementById("play-"+id);
 icon.setAttribute("class", "play icon")
 }
+
+
+

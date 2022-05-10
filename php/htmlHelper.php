@@ -1,15 +1,17 @@
 <?php 
-    require_once("./php/navbar.php");
-    require_once("./php/generalHelper.php");
+    require_once($_SERVER['DOCUMENT_ROOT']."/php/navbar.php");
+    require_once($_SERVER['DOCUMENT_ROOT']."/php/generalHelper.php");
 
 
-    function GenerateHeader($header, $name) {
+    function GenerateHeader($header, $name, $hue=-100, $desc="Welcome to the Weeb version of Metaverse, METAVERSE 0, ULTRAVERSE 1") {
         echo <<<EOL
                <html>
                <head>
                <style>
                      :root {
-                     --main-hue-theme: -100deg;
+               EOL;
+               echo "--main-hue-theme: ".$hue."deg;";
+               echo <<<EOL
                      }
                </style>
                <meta charset="utf-8">
@@ -20,7 +22,9 @@
                <link rel="icon" href="/static/favicon.ico">
                <meta name="msapplication-TileColor" content="#ffffff">
                <meta property="og:type" content="website">
-               <meta name="description" content="osu!Aeris is the first osu! alternative server fully working with delta_t PP calculation, come and try it yourself, we also do tournaments! on our discord">
+               EOL;
+               echo '<meta name="description" content="'.$desc.'">';
+               echo <<<EOL
                <meta name="msapplication-TileImage" content="/static/logos/logo2.png">
                <meta name="theme-color" content="#7f03fc">
                <meta name="keywords" content="osu!, ripple, akatsuki, discord, rythm game, aeris-dev, aeris, delta_t">
@@ -37,7 +41,7 @@
                <link href="https://kit-free.fontawesome.com/releases/latest/css/free.min.css" media="all" rel="stylesheet">
                <script src="/static/aeris.js?v=1.4" type="text/javascript"></script>
                <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-            
+               <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
                <body>
                <div class="background-image" 
                EOL;
@@ -54,6 +58,9 @@
 /* ------------------------------- LEFT ITEMS ------------------------------- */
                Logo();
                Item("home", "/");
+               if (IsLog()) {
+                  Item("Chat", "/chat");
+               }
 /* -------------------------------------------------------------------------- */
 
              echo <<<EOL
@@ -73,7 +80,7 @@
                else {
                   echo '<div class="ui dropdown item avatar-div"><a></a><img id="avatar" class="ui avatar image reactiveImages" src="/avatars/'.GetID().'"><div class="menu">';
                      Item("Profile", "/users/".GetID());
-                     Item("Settings", "/settings");
+                     Item("Settings", "/settings/profile");
                      Item("Log out", "/logout");
                   echo '</div></div>';
 
@@ -110,15 +117,15 @@
                                     <div class="information-message">Welcome to Ultraverse</div>
                         EOL;
                         if (isset($_GET["er"])) {
-                           echo "<div class=\"ui error message\">".$_GET["er"]."</div>";
+                           echo "<div class=\"ui error message\"><i class=\"close icon\"></i>".$_GET["er"]."</div>";
                         }
 
                         else if (isset($_GET["ew"])) {
-                           echo "<div class=\"ui warning message\">".$_GET["ew"]."</div>";
+                           echo "<div class=\"ui warning message\"><i class=\"close icon\"></i>".$_GET["ew"]."</div>";
                         }
 
                         else if (isset($_GET["es"])) {
-                           echo "<div class=\"ui success message\">".$_GET["es"]."</div>";
+                           echo "<div class=\"ui success message\"><i class=\"close icon\"></i>".$_GET["es"]."</div>";
                         }
                         
                         echo <<<EOL
@@ -142,7 +149,6 @@
              <div class="lower">Frontend Hanayo 1.11.0 | Ultraverse 2022-2022</div>
           </div>
 
-          <script type="text/javascript">init(color)</script>
           <div id="loading-screen" class="loading-bg lbghidden">
              <i class="l1"></i>
              <i class="l2"></i>
@@ -153,7 +159,7 @@
              <div id="search-box" class="search-fg">
                 <div>
                    <div class="search-window">
-                      <input type="text" placeholder="Looking for someone?" id="search-input" autocomplete="off" oninput="if (!window.__cfRLUnblockHandlers) return false; search()">
+                      <input type="text" placeholder="Looking for someone?" id="search-input" autocomplete="off" oninput="search()">
                       <i class="big search link icon"></i>
                    </div>
                 </div>

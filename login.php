@@ -57,7 +57,11 @@
         setcookie("Authorisation", $token);
 
         http_response_code(302);
-        header('location:/?es=Connected');
+        $redir = "/";
+        if (isset($_GET["redir"])) {
+            $redir = $_GET["redir"];
+        }
+        header('location:'.$redir.'?es=Connected');
         die();
 
     } 
@@ -68,7 +72,13 @@
 		<div class="tiny container">
 			<div class="ui raised segments">
 				<div class="ui segment">
-					<form id="register-form" class="ui form" method="post" action="/login.php">
+                    <?php 
+                        $redir = "/";
+                        if (isset($_GET["redir"])) {
+                            $redir = $_GET["redir"];
+                        }
+                    ?>
+					<form id="register-form" class="ui form" method="post" action="/login.php?redir<?= $redir?>">
 						<div class="field">
 							<label>Username</label>
 							<input tabindex="1" type="text" name="username" placeholder="Username"" required pattern="^[A-Za-z0-9 _\[\]-]{2,15}$">
