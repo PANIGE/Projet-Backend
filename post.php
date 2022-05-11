@@ -12,16 +12,27 @@
             $author = GetID();
             $post_title = htmlspecialchars($_POST['title']);
             $post_message = nl2br(htmlspecialchars($_POST['message']));
+
             $store_post = $pdo->prepare("INSERT INTO posts(UID,title,message)VALUES(:UID,:title,:message)");
             $store_post->execute([
                 ":UID"     => $author,
                 ":title"   => $post_title,
                 ":message" => $post_message,
             ]);
-            var_dump($_FILES);
+            $req = $pdo->prepare('SELECT LAST_INSERT_ID() id;');
+            $req->execute();
+            $id = $req->fetch(PDO::FETCH_ASSOC)["id"];
+            $uploaddir = $uploaddir = $_SERVER['DOCUMENT_ROOT']."/posts/".$id.".png";
 
-            http_response_code(302);
-            header("location:/post?es=Your%20Message%20Have%20Been%20Sent");
+            if (move_uploaded_file($_FILES['pub']['tmp_name'], $uploaddir)) {
+                http_response_code(302);
+                header("location:/posts/".$id."?es=Post%20published%20successfully");
+            } else {
+                http_response_code(302);
+                header("location:/post?er=Post%20Could%20not%20be%20submitted");
+            }
+
+
             die();
         }
         else {
@@ -35,23 +46,23 @@
 
 <html>
     <div class="ui centered segment">
-        <form method="POST" class="ui form">
-
+        <form method="POST" class="ui form" enctype="multipart/form-data">
+            <input tabindex="1" type="file" id="file" style="display:none" required="" accept="image/*" name="pub" onchange="UpdateImg(event)">
             <div class="title_part">
                 <h1 id="newpost">New post</h1>
                 
-                <input type="text" name="title" id="ttl" placeholder="Title Your Message"></input>
+                <input tabindex="2" type="text" name="title" id="ttl" placeholder="Title Your Message"></input>
             </div>
             
             <div class="ui divider"></div>
             <div class="message_part">
-                <textarea name="message" id="msg" placeholder="Enter Your Message" ></textarea>
+                <textarea tabindex="3" name="message" id="msg" placeholder="Enter Your Message" ></textarea>
             </div>
             <div class="ui divider"></div>
             <img id="image" style="display:none;">
             <div class="ui divider"></div>
             <div class="option_part">
-                <input type="file" id="file" style="display:none" required="" accept="image/*" name="pub" onchange="UpdateImg(event)">
+                
                         <label for="file" class="ui blue inverted labeled icon button">
 							<i class="file icon"></i>
 							Ouvrir le fichier

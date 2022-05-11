@@ -15,8 +15,6 @@
 			http_response_code(302);
 			header("location:/settings/avatar?es=Avatar%20Successfully%20Changed");
 		} else {
-			echo $_FILES;
-			die();
 			http_response_code(302);
 			header("location:/settings/avatar?er=Avatar%20Could%20not%20be%20changed");
 		}
