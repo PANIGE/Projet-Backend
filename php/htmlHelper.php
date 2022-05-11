@@ -2,6 +2,7 @@
     require_once($_SERVER['DOCUMENT_ROOT']."/php/navbar.php");
     require_once($_SERVER['DOCUMENT_ROOT']."/php/generalHelper.php");
 
+    UpdateLastSeen();
 
     function GenerateHeader($header, $name, $hue=-100, $desc="Welcome to the Weeb version of Metaverse, METAVERSE 0, ULTRAVERSE 1") {
         echo <<<EOL
@@ -20,14 +21,12 @@
                echo "<title> ".$name." - Ultraverse</title>";
                echo <<<EOL
                <link rel="icon" href="/static/favicon.ico">
-               <meta name="msapplication-TileColor" content="#ffffff">
                <meta property="og:type" content="website">
                EOL;
                echo '<meta name="description" content="'.$desc.'">';
                echo <<<EOL
                <meta name="msapplication-TileImage" content="/static/logos/logo2.png">
                <meta name="theme-color" content="#7f03fc">
-               <meta name="keywords" content="osu!, ripple, akatsuki, discord, rythm game, aeris-dev, aeris, delta_t">
                <meta name="robots" content="index, follow">
                <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
                <meta lang="en">
@@ -60,6 +59,7 @@
                Item("home", "/");
                if (IsLog()) {
                   Item("Chat", "/chat");
+                  Item("Make a post", "/post");
                }
 /* -------------------------------------------------------------------------- */
 

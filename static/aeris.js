@@ -186,13 +186,13 @@ if (query == '') {
     searchitems.innerHTML = "";
     Data.forEach(element => {
       var anchor = searchitems.appendChild(document.createElement('a'));
-      anchor.setAttribute("href", "/users/"+element.ID);
+      anchor.setAttribute("href", "/users/"+element.id);
       var maindiv = anchor.appendChild(document.createElement('div'));
       maindiv.setAttribute("class","players-search-tab")
       var imgdiv = maindiv.appendChild(document.createElement('div'));
       imgdiv.setAttribute("class", "avatar")
       var img = imgdiv.appendChild(document.createElement('img'));
-      img.setAttribute("src", "/avatars/"+element.ID)
+      img.setAttribute("src", "/avatars/"+element.id)
       var h3 = maindiv.appendChild(document.createElement('h3'));
       h3.innerHTML = element.username
     })

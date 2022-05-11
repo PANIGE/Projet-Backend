@@ -47,11 +47,12 @@
         $PW_hash = password_hash($PW , PASSWORD_DEFAULT);
 
 
-        $query = $pdo->prepare('INSERT INTO users (username, username_safe ,pw_hash ) VALUES (:name, :sname, :pw)');
+        $query = $pdo->prepare('INSERT INTO users (username, username_safe ,pw_hash, register ) VALUES (:name, :sname, :pw, :register)');
         $query->execute([
             ":name"   => $Name,
             ":pw" => $PW_hash,
             ":sname" => $SafeName,
+            ":register" => time(),
         ]);
 
         $req = $pdo->prepare('SELECT LAST_INSERT_ID() id;');
