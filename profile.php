@@ -2,6 +2,7 @@
     require_once("./php/htmlHelper.php");
     require_once("./php/generalHelper.php");
     require_once("./php/sql.php");
+    $pdo = getpdo();
     
 
     $ID = $_GET["id"];
@@ -82,8 +83,8 @@
 
                 <?php if (!$self) { ?>
                 <a id="add-friend-button" href="#"><div class="tab hoverable">
-                            <div class="label" style="border: 2px solid;box-shadow: 0 0 4px 0px; position:relative; color: #494949;">
-                                <h3><i class="circular plus icon"></i>Loading</h3>
+                            <div class="label" friend="-1" id="friend-label" style="border: 2px solid;box-shadow: 0 0 4px 0px; position:relative; color: #494949;">
+                                <h3 id="friend-text"><i class="circular plus icon"></i>Loading</h3>
                             </div>
                                 <i class="right chevron icon"></i>
                             </div>
@@ -107,7 +108,32 @@
         </div>
     </div>
              
-             
+    <script>
+        $.get("/api/friend?id=<?= $ID ?>", (d, s) => {
+            $d = $.parseJSON(d);
+            console.log($d.status)
+            switch ($d.status) {
+                case 0:
+                    $("#friend-label").css("color", "#00ffee");
+                    $("#friend-text").html("<i class=\"circular plus icon\"></i>Follow");
+                    $("#friend-label").attr("friend", "0");
+                    break;
+                case 1:
+                    $("#friend-label").css("color", "rgb(49 255 0)");
+                    $("#friend-text").html("<i class=\"circular user icon\"></i>Following");
+                    $("#friend-label").attr("friend", "0");
+                    break;
+                case 2:
+                    $("#friend-label").css("color", "#00ffee");
+                    $("#friend-text").html("<i class=\"circular heart icon\"></i>Mutual");
+                    $("#friend-label").attr("friend", "0");
+                    break;
+            }
+        });
+        $("#add-friend-button").click(()=> {
+
+        });
+    </script>   
     
 
 <?php GenerateFooter(); ?>

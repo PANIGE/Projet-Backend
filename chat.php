@@ -2,7 +2,7 @@
     require_once("./php/htmlHelper.php");
     require_once("./php/sql.php");
     RequireLogin();
-    GenerateHeader("register.jpg", "chat", 150);
+    GenerateHeader("register.jpg", "Chat", 150);
     if (isset($_POST['chat'])) {
         $message= nl2br(htmlspecialchars($_POST['chat']));
         $inserer_message = $pdo->prepare('INSERT INTO messages (message, uid, channel) VALUES(?, ?, ?)');
@@ -23,14 +23,22 @@
         </section>
 
     <script> 
+        var lastMSGID = 0;
         setInterval('load_message()',1000);
         function load_message() {
-            $('#message').load('load_chat.php');
+            $('#message').load('/load_chat.php');
             /*
-            $('#chatdiv').animate({
+
+            */
+
+            let t = $('div.channel-message-tab:last').attr("id");
+            if (t != lastMSGID) {
+                lastMSGID = t
+                $('#chatdiv').animate({
                 scrollTop: 90000
             },0);
-            */
+            }
+
         }
         let form = $("#chat")
         form.submit(function(){
@@ -44,6 +52,15 @@
             return false;
         });
         
+
+        function delete_msg(id) {
+            $.post("/api/message_delete?id="+id);
+            
+        }
+        function delete_profil(id) {
+            $.post("/api/profil_delete?id="+id);
+            
+        }
     </script>
 </form>
 

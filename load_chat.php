@@ -1,11 +1,13 @@
 <?php 
     require_once("./php/htmlHelper.php");
     require_once("./php/sql.php");
+    
     $load_chat = $pdo->query('SELECT * FROM messages WHERE id>=(SELECT max(id) FROM messages)-30;');
     while($message = $load_chat->fetch()){
-
+        
         $user = GetUserData($message["UID"]);
         $id = $message["UID"];
+        $self = $id == GetID();
         $images = [];
         $pattern = "(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})";
         if (preg_match($pattern, $message["message"], $matches)) {
@@ -20,7 +22,7 @@
         }
 
         ?>
-        <div class="channel-message-tab">
+        <div class="channel-message-tab" style="position:relative;" id=<?= $message["ID"] ?>>
             <a href="/users/<?= $id?>"><img class="channel-message-avatar" src="/avatars/<?= $id?>"></a>
             
             <div class="channel-message-box"> <a href="/users/<?= $id?>"><h4>
@@ -30,28 +32,32 @@
                 else echo "<i class=\"grey circle small icon\"></i>";
 
                 
-            ?>
-            
-            <?= $user["username"] ?>
-            <?php 
-                switch ($user["rank"]) {
-                    case 2:
-                        echo "<span class=\"ui small blue horizontal label\" style=\"color: white!important;\">Moderator</span>";
-                    break;
-                    case 3:
-                        echo "<span class=\"ui small red horizontal label\" style=\"color: white!important;\">Admin</span>";
-                    break;  
+                ?>
+                
+                <?= $user["username"] ?>
+                <?php 
+                    switch ($user["rank"]) {
+                        case 2:
+                            echo "<span class=\"ui small blue horizontal label\" style=\"color: white!important;\">Moderator</span>";
+                        break;
+                        case 3:
+                            echo "<span class=\"ui small red horizontal label\" style=\"color: white!important;\">Admin</span>";
+                        break;  
+                    }
+                ?>    
+                </h4></a> <?=htmlspecialchars_decode($message['message']);?><?php 
+                foreach ($images as $im) {
+                    echo "<img style=\"height: 32em;width: fit-content;\" src=\"".$im."\" />";
                 }
-            ?>    
-        </h4></a> <?=htmlspecialchars_decode($message['message']);?><?php 
-        foreach ($images as $im) {
-            echo "<img style=\"height: 32em;width: fit-content;\" src=\"".$im."\" />";
-        }
-        ?>
-        
-        </div>
+                ?>
+                <?php if ($self == $id) {?>
+                <a id="delete-icon" onclick="delete_msg(<?= $message["ID"] ?>)"><i class="trash icon" style="position:absolute;right: 1em;top: 1em;"></i></a>
+                    
+                <?php } ?>
+            </div>
+
+            
         </div>
         <?php
     }
 ?>
-

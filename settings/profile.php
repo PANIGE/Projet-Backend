@@ -2,6 +2,7 @@
     require_once($_SERVER['DOCUMENT_ROOT']."/php/htmlHelper.php");
     require_once($_SERVER['DOCUMENT_ROOT']."/php/generalHelper.php");
     require_once($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
+     $pdo = GetPDO();
     GenerateHeader("settings.jpg", "Settings > Profile", 200);
     RequireLogin();
     $User = Context()["User"];

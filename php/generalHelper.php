@@ -1,5 +1,6 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
+     $pdo = GetPDO();
 
 function IsLog() {
     return GetID() != -1;
@@ -14,7 +15,7 @@ function RequireLogin() {
 }
 
 function GetID() {
-    require($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
+    $pdo = getPDO();
 
     if (!isset($_COOKIE["Authorisation"])) return -1;
     $req = $pdo->prepare("SELECT UID FROM webtokens WHERE token = :tok");
@@ -43,7 +44,8 @@ function GetSafeUsername($username) {
 }
 
 function GetIDFromUsername($username) {
-    require($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
+    require_once($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
+     $pdo = GetPDO();
     
     $req = $pdo->prepare("SELECT ID FROM users WHERE username_safe = :usr");
     $req->execute([
@@ -55,7 +57,8 @@ function GetIDFromUsername($username) {
 }
 
 function GetUserData($id) {
-    require($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
+    require_once($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
+     $pdo = GetPDO();
 
     $req = $pdo->prepare("SELECT * FROM users WHERE id = :id");
     $req->execute([
@@ -67,7 +70,8 @@ function GetUserData($id) {
 }
 
 function UpdateLastSeen() {
-    require($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
+    require_once($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
+     $pdo = GetPDO();
     if (IsLog()) {
         $r = $pdo->prepare("UPDATE `users` SET `last_seen` = :time WHERE (`id` = :id);");
         $r->execute([
@@ -150,3 +154,13 @@ function IsImage( $url ){
   return false;
   }
   
+  function GetGroupData($id) {
+    require_once($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
+     $pdo = GetPDO();
+
+    $req = $pdo->prepare("SELECT * FROM groups WHERE id = :id");
+    $req->execute([
+        ":id" => $id
+    ]);
+    $data = $req->fetch(PDO::FETCH_ASSOC);
+}

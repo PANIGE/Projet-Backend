@@ -2,6 +2,7 @@
     require_once($_SERVER['DOCUMENT_ROOT']."/php/htmlHelper.php");
     require_once($_SERVER['DOCUMENT_ROOT']."/php/generalHelper.php");
     require_once($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
+     $pdo = GetPDO();
 	RequireLogin();
 	if($_SERVER["REQUEST_METHOD"] == "POST") {
 

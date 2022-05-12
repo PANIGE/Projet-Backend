@@ -18,6 +18,7 @@ expected result : {
 //sid = GetID();
 //oid = $_GET id
     require_once($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
+    $pdo = GetPDO();
     require_once($_SERVER['DOCUMENT_ROOT']."/php/generalHelper.php");
     RequireLogin();
 

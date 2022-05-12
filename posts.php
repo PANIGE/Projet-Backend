@@ -1,47 +1,23 @@
 <?php 
     require_once("./php/htmlHelper.php");
+    require_once("./php/generalHelper.php");
     require_once("./php/sql.php");
     $pdo = getpdo();
     GenerateHeader("default.jpg", "publication", 220);
     RequireLogin();
-    require_once("./php/generalHelper.php");
+    
+    $ID = $_GET["id"];
+   
+
+    $post_content=$pdo->prepare('SELECT UID, title, message FROM POST WHERE id= :id');
+    $post_content->execute([
+        ":id"      => $ID,
+    ]);
+    $Post = $post_content->fetch(PDO::FETCH_ASSOC);
+    $User = GetUserData($res["UID"]);
 
 
-    if(isset($_POST['send'])){
-        if ( !empty($_POST['title']) && !empty($_POST['message']))
-        {
-            $author = GetID();
-            $post_title = htmlspecialchars($_POST['title']);
-            $post_message = nl2br(htmlspecialchars($_POST['message']));
-
-            $store_post = $pdo->prepare("INSERT INTO posts(UID,title,message)VALUES(:UID,:title,:message)");
-            $store_post->execute([
-                ":UID"     => $author,
-                ":title"   => $post_title,
-                ":message" => $post_message,
-            ]);
-            $req = $pdo->prepare('SELECT LAST_INSERT_ID() id;');
-            $req->execute();
-            $id = $req->fetch(PDO::FETCH_ASSOC)["id"];
-            $uploaddir = $uploaddir = $_SERVER['DOCUMENT_ROOT']."/postsStorage/".$id.".png";
-
-            if (move_uploaded_file($_FILES['pub']['tmp_name'], $uploaddir)) {
-                http_response_code(302);
-                header("location:/posts/".$id."?es=Post%20published%20successfully");
-            } else {
-                http_response_code(302);
-                header("location:/post?er=Post%20Could%20not%20be%20submitted");
-            }
-
-
-            die();
-        }
-        else {
-            http_response_code(302);
-            header("location:/post?er=You%20Have%20To%20Complete%20The%20Form");
-            die();
-        };
-    }
+    
 ?>
     
 

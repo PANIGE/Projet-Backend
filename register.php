@@ -1,6 +1,7 @@
 <?php 
     require_once("./php/htmlHelper.php");
     require_once("./php/sql.php");
+    $pdo = getpdo();
     require_once("./php/generalHelper.php");
     GenerateHeader("register.jpg", "Register");
 
