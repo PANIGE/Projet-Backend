@@ -11,19 +11,19 @@
     $self = GetID();
 
 
-    $selectuser = $pdo->prepare("SELECT UID FROM group_users WHERE groupes_id = :id");
+    $selectuser = $pdo->prepare("SELECT UID FROM user_groups WHERE groupes_id = :id");
     $selectuser->execute([
         ":id"   => $ID,
     ]);
     $group_membre = $selectuser->fetchAll();
 
-    $nb_user = pdo->prepare("SELECT COUNT(*) rows FROM group_users WHERE GID = :id");
+    $nb_user = pdo->prepare("SELECT COUNT(*) rows FROM user_groups WHERE GID = :id");
     $nb_user->execute([
         ":id" => $ID,
     ]);
     $numbre_users = $nb_user->fetchAll();
 
-    $priv = pdo->prepare("SELECT is_private FROM group_users WHERE GID = :id");
+    $priv = pdo->prepare("SELECT is_private FROM user_groups WHERE GID = :id");
     $priv->execute([
         ":id" => $ID,
     ]);
