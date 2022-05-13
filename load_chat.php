@@ -1,8 +1,32 @@
 <?php 
     require_once("./php/htmlHelper.php");
     require_once("./php/sql.php");
+    $chan = $_GET["chan"];
+    if (str_starts_with($chan, "#")) {
+        //It's public chat
+        $load_chat = $pdo->prepare('SELECT * FROM messages WHERE channel = :chan;');
+        $load_chat->execute([
+            ":chan" => $chan
+        ]);
+    }
+    elseif (str_starts_with($chan, "~")) {
+        //It's a group
+    }
+    elseif (is_numeric($chan)) {
+        //it's a private chat
+        $load_chat = $pdo->prepare('SELECT * FROM ultraverse.messages where (UID = :sid OR UID = :oid) AND (channel = :sid OR channel = :oid) ;');
+        $load_chat->execute([
+            ":sid" => GetID(),
+            ":oid" => $chan,
+        ]);
+    }
+    else {
+        http_response_code(404);
+        die();
+    }
     
-    $load_chat = $pdo->query('SELECT * FROM messages WHERE id>=(SELECT max(id) FROM messages)-30;');
+
+
     while($message = $load_chat->fetch()){
         
         $user = GetUserData($message["UID"]);

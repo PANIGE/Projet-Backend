@@ -3,65 +3,36 @@
     require_once("./php/sql.php");
     RequireLogin();
     GenerateHeader("register.jpg", "Chat", 150);
-    if (isset($_POST['chat'])) {
-        $message= nl2br(htmlspecialchars($_POST['chat']));
-        $inserer_message = $pdo->prepare('INSERT INTO messages (message, uid, channel) VALUES(?, ?, ?)');
-        $inserer_message->execute(array(htmlspecialchars($message, ENT_QUOTES), GetID(), "#general"));
-    }
-?>
-<div id="chatdiv" style="height: 72%;overflow: scroll;">
-    <div id="message"></div>
-</div>
- <form id="chat" class="ui form" method="post" action="/chat.php" >
+    $pdo = GetPDO();
+    $ID = GetID();
 
-     <div class="field">    
-        <input type="text" name="chat" placeholder="send message" required id="messageInput">
-    </div>
-    
-        <section id="message">
+    //PUBLIC CHANNELS
+    echo "<h3 class=\"ui horizontal header divider\">Public chat</h3>";
+    $req = $pdo->query('SELECT name FROM ultraverse.channels;');
+    $publicChannels = $req->fetchAll();
 
-        </section>
+    foreach ($publicChannels as $chan) {?>
+        <div class="ui segment">
+            <a class="ui blue inverted button" href="/chat/<?= urlencode($chan["name"])?>">Join</a> <i class="ui large circular hashtag icon"></i> <span style="font-size: 25px;position: absolute;top: 22px;"><?=$chan["name"]?></span>
+        </div>
 
-    <script> 
-        var lastMSGID = 0;
-        setInterval('load_message()',1000);
-        function load_message() {
-            $('#message').load('/load_chat.php');
-            /*
 
-            */
+    <?php }
 
-            let t = $('div.channel-message-tab:last').attr("id");
-            if (t != lastMSGID) {
-                lastMSGID = t
-                $('#chatdiv').animate({
-                scrollTop: 90000
-            },0);
-            }
+    $Friend_user=$pdo->prepare('SELECT `to`FROM `relations` WHERE `fro` =:id');
+    $Friend_user->execute([
+        ":id" => $ID
+    ]);
+    $data= $Friend_user->fetchAll(PDO::FETCH_ASSOC);
 
-        }
-        let form = $("#chat")
-        form.submit(function(){
-            $.post($(this).attr('action'), $(this).serialize(), function(response){},'json');
-            console.log("A");
-            setTimeout(() => {
-                $("#messageInput").val('')
-                form.removeClass("loading");
-            }, 1000);
-            
-            return false;
-        });
-        
+    echo "<h3 class=\"ui horizontal header divider\">Private chat</h3>";
 
-        function delete_msg(id) {
-            $.post("/api/message_delete?id="+id);
-            
-        }
-        function delete_profil(id) {
-            $.post("/api/profil_delete?id="+id);
-            
-        }
-    </script>
-</form>
+    foreach ($data as $t) { ?>
+        <div class="ui segment">
+            <a class="ui blue inverted button" href="/chat/<?=$t["to"]?>">Contact</a> 
+            <img style="height:3em;margin-bottom:-1em;margin-right: 0.5em;border-radius: 500rem;" src="/avatars/<?= $t["to"] ?>"> 
+            <span style="font-size: 25px;position: absolute;top: 25px;"><?= GetUserData($t["to"])["username"] ?></span>
+        </div>
+    <?php } ?>
 
 <?php GenerateFooter(); ?>

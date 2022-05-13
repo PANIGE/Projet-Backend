@@ -7,6 +7,11 @@
 
     $ID = $_GET["id"];
     $User = GetUserData($ID);
+    if (!$User) {
+        http_response_code(404);
+        echo render_php('404.php');
+        die();
+    }
     GenerateHeader("../../banners/".$ID, "User Profile", 200);
 
     $r = $pdo->prepare("SELECT icon, title FROM ultraverse.badges WHERE ID in (SELECT  BID from user_badge where UID = :id);");
@@ -16,6 +21,13 @@
     $badges = $r->fetchAll(PDO::FETCH_ASSOC);
 
     $self = $ID == GetID();
+
+
+    $req = $pdo->prepare("SELECT * FROM ultraverse.posts where UID = :uid order by unix DESC LIMIT 50;");
+    $req->execute([
+        ":uid" => $ID
+    ]);
+    $data = $req->fetchAll();
 
 ?>
 
@@ -48,6 +60,8 @@
                         <?php break; ?>
 
                     <?php endswitch; ?>
+
+                    <h3 style="margin: 0;color: #fff;text-shadow: 0 0 6px black;"> <?= GetUserFollowers($ID) ?> Followers</h1>
                 </div>
                 </div>
             </div>
@@ -63,7 +77,15 @@
     <div class="profile-segment">
 
         <div class="left-panel">
-            
+            <?php foreach ($data as $post) { ?>
+                <a href="/posts/<?= $post["id"] ?>" style="color:white;" >
+                    <div class="ui raised segment" style="margin: 0 0 0.5em 0;">
+                        <h2><?= $post["title"]; ?> <span style="float: right;color: #ffffff85;"><?= GetRelativeTime($post["unix"]); ?></span> </h2><div class="ui divider"></div><p> <?= $post["message"] ?> </p>                 <div style="text-align: center;background: var(--background-hue);border-radius: .5em;">
+                           <img style="max-height:50em" src="/postsStorage/<?= $post["id"] ?>.png">
+                        </div>
+                    </div>
+                </a>
+            <?php } ?>
         </div>
     
         
@@ -91,9 +113,17 @@
                         </a>
                     <?php } ?>
 
+                <?php if (!$self) { ?>
+                <a id="add-chat-button" onclick=""><div class="tab hoverable">
+                            <div class="label" id="chat-label" style="border: 2px solid;box-shadow: 0 0 4px 0px; position:relative; color: #494949;">
+                                <h3 id="chat-text"><i class="circular plus icon"></i>chat</h3>
+                            </div>
+                                <i class="right chevron icon"></i>
+                            </div>
+                        </a>
+                    <?php } ?>
+
                 <div class="ui divider"></div>
-    
-                
                 
                 <?php foreach($badges as $badge){ ?>
                 <div class="tab">
@@ -109,9 +139,9 @@
     </div>
              
     <script>
-        $.get("/api/friend?id=<?= $ID ?>", (d, s) => {
+        function UpdateFriend() {
+            $.get("/api/friend?id=<?= $ID ?>", (d, s) => {
             $d = $.parseJSON(d);
-            console.log($d.status)
             switch ($d.status) {
                 case 0:
                     $("#friend-label").css("color", "#00ffee");
@@ -121,18 +151,48 @@
                 case 1:
                     $("#friend-label").css("color", "rgb(49 255 0)");
                     $("#friend-text").html("<i class=\"circular user icon\"></i>Following");
-                    $("#friend-label").attr("friend", "0");
+                    $("#friend-label").attr("friend", "1");
                     break;
                 case 2:
-                    $("#friend-label").css("color", "#00ffee");
-                    $("#friend-text").html("<i class=\"circular heart icon\"></i>Mutual");
-                    $("#friend-label").attr("friend", "0");
+                    $("#friend-label").css("color", "rgb(251 255 19)");
+                    $("#friend-text").html("<i class=\"circular user icon\"></i>Mutual");
+                    $("#friend-label").attr("friend", "2");
                     break;
             }
         });
-        $("#add-friend-button").click(()=> {
+        }
 
+        $("#add-friend-button").click(()=> {
+            $current = parseInt($("#friend-label").attr("friend"));
+            console.log($current);
+            switch ($current) {
+                case 0:
+                    $.ajax({
+                        async: false,
+                        type: 'GET',
+                        url: '/api/setfriend?id=<?= $ID ?>&fr=1',
+                        success: function(data) {
+                            //callback
+                        }
+                    });
+                    break;
+                case 1:
+                case 2:
+                    $.ajax({
+                        async: false,
+                        type: 'GET',
+                        url: '/api/setfriend?id=<?= $ID ?>&fr=0',
+                        success: function(data) {
+                            //callback
+                        }
+                    });
+                    break;
+            }
+
+            UpdateFriend();
         });
+
+        UpdateFriend();
     </script>   
     
 

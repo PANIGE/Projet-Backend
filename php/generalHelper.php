@@ -64,7 +64,12 @@ function GetUserData($id) {
     $req->execute([
         ":id" => $id
     ]);
+    
     $data = $req->fetch(PDO::FETCH_ASSOC);
+    if (!$data) {
+        return;
+    }
+
     $data["online"] = (time() - $data["last_seen"]) < 60;
     return $data;
 }
@@ -154,7 +159,7 @@ function IsImage( $url ){
   return false;
   }
   
-  function GetGroupData($id) {
+function GetGroupData($id) {
     require_once($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
      $pdo = GetPDO();
 
@@ -164,3 +169,38 @@ function IsImage( $url ){
     ]);
     $data = $req->fetch(PDO::FETCH_ASSOC);
 }
+
+// https://stackoverflow.com/questions/34593130/render-php-file-into-string-variable
+function render_php($path)
+{
+    ob_start();
+    include($path);
+    $var=ob_get_contents(); 
+    ob_end_clean();
+    return $var;
+}
+
+
+function GetUserFollowers($userID) {
+
+    require_once($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
+     $pdo = GetPDO();
+
+    $req = $pdo->prepare("SELECT count(*) c FROM ultraverse.relations where `to` = :id");
+    $req->execute([
+        ":id" => $userID
+    ]);
+    return $req->fetch()["c"];
+}
+
+/*
+function GeneratePost($array) {
+    foreach ($data as $post) { 
+        echo "<a href=\"/posts/".$post["id"]."\" style=\"color:white;\" >";
+        echo "<div class=\"ui raised segment\" style=\"margin: 0 0 0.5em 0;\">";
+        echo "<h2>".$post["title"]."<span style=\"float: right;color: #ffffff85;\">".GetRelativeTime($post["unix"])."</span> </h2><div class=\"ui divider\"></div><p>".$post["message"]."</p><img src=\"/postsStorage/".$post["id"].".png\">";
+        echo "</div>";
+        echo "</a>";
+    } 
+}
+*/

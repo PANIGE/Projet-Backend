@@ -3,70 +3,143 @@
     require_once("./php/generalHelper.php");
     require_once("./php/sql.php");
     $pdo = getpdo();
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+        if(!key_exists("content", $_POST)) {
+            http_response_code(400);
+            die();
+        }
+        $content=$_POST["content"]; // texte du commentaire; c'est un INPUT // Vérifier si le content est présent
+        $UID=GetID(); // id de l'utilisateur
+                            //utiliser l'ID
+
+        if (key_exists("cid", $_POST)) {
+            $CID = $_POST["cid"];
+            $commentaire=$pdo->prepare('INSERT INTO `ultraverse`.`posts_comments` (`UID`, `CID`, `content`, `unix`) VALUES (:user, :CID, :content, :time )');
+            $commentaire->execute([
+            ":content" => $content,
+            ":user" => $UID,
+            ":CID" => $CID,
+            ":time" => time(),
+            ]);
+        }
+        else {
+            $PID=$_GET["id"]; // id du post // Verifier si l'ID est dans la SQL
+            $commentaire=$pdo->prepare('INSERT INTO `ultraverse`.`posts_comments` (`UID`, `PID`, `content`, `unix`) VALUES (:user, :postID, :content, :time )');
+            $commentaire->execute([
+            ":content" => $content,
+            ":user" => $UID,
+            ":postID" => $PID,
+            ":time" => time(),
+            ]);
+        }
+
+
+
+
+        http_response_code(302);
+        header("location:".$_SERVER['REQUEST_URI']);
+    }
+
     GenerateHeader("default.jpg", "publication", 220);
     RequireLogin();
     
     $ID = $_GET["id"];
    
-
-    $post_content=$pdo->prepare('SELECT UID, title, message FROM POST WHERE id= :id');
+    $post_content=$pdo->prepare('SELECT id, UID, title, message, unix FROM posts WHERE id= :id');
     $post_content->execute([
         ":id"      => $ID,
     ]);
+    
     $Post = $post_content->fetch(PDO::FETCH_ASSOC);
-    $User = GetUserData($res["UID"]);
-
-
-    
+    $User = GetUserData($Post["UID"]);
+    $title = $Post["title"];
+    $message = $Post["message"];
+    $user_name = $User["username"];
+    //GetRelativeTime(unix) -> "X time ago"
+    $postFormattedDate = date("F j, Y" ,$Post["unix"]);
 ?>
-    
 
-<html>
-    <div class="ui centered segment">
-        <form method="POST" class="ui form" enctype="multipart/form-data">
-            <input tabindex="1" type="file" id="file" style="display:none" required="" accept="image/*" name="pub" onchange="UpdateImg(event)">
-            <div class="title_part">
-                <h1 id="newpost">New post</h1>
-                
-                <input tabindex="2" type="text" name="title" id="ttl" placeholder="Title Your Message"></input>
-            </div>
+    <div class = "ui raised segment" >
+        
+    <div class = "user_and_title" >
             
-            <div class="ui divider"></div>
-            <div class="message_part">
-                <textarea tabindex="3" name="message" id="msg" placeholder="Enter Your Message" ></textarea>
-            </div>
-            <div class="ui divider"></div>
-            <img id="image" style="display:none;">
-            <div class="ui divider"></div>
-            <div class="option_part">
-                
-                        <label for="file" class="ui blue inverted labeled icon button">
-							<i class="file icon"></i>
-							Ouvrir le fichier
-						</label>
-                        <label for="file" class="ui blue inverted right labeled icon button">
-							<i class="smile icon"></i>
-							Emotes
-						</label>
-            </div>
-            <div class="ui divider"></div>
-            <div>
-                <button name="send" class="ui huge primary button" type="submit" id="sbmt"> publish </button>  
+            <div class = "title" >
+                <h3> <?php echo $title ?> 
+                <a href="/users/<?= $Post["UID"] ?>">
+                <span style="float: right;color: var(--highLight-bg);">
+                              <img src="/avatars/<?= $Post["UID"] ?>" style="height: 1.5em;margin-bottom: -0.4em;margin-right: 0.5em;border-radius: 5em;">
+                              <?= $user_name ?></a>
+                           </span>  </h3>
             </div>
 
-        </form>
-            
-        <script>
-            function UpdateImg(e) {
-                $('#image').attr("src", (window.URL || window.webkitURL).createObjectURL(event.target.files[0]));
-                $('#image').attr("style", "");
-            }
-        </script>
+        </div>
+
+        <div class="ui divider"></div>
+
+        <div class = "content" >
+        <div style="text-align: center;background: var(--background-hue);border-radius: .5em;">
+                           <img style="max-height:50em" src="/postsStorage/<?= $Post["id"] ?>.png">
+                        </div>
+                        </h2><div class="ui divider"></div><p><?= $postFormattedDate." (".GetRelativeTime($Post["unix"]).")" ?></p>
+            <div class = "text" >
+                <p> <?php echo $message ?> </p>
+            </div>
+
+            <div class = "image" >
+
+            </div>
+        </div>
+
+
     </div>
-</html>
+    <h3 class = "ui horizontal divider header">Comments</h3>
+            
+    <div class = "ui segment" >
+        <form method="post" action="/posts/<?= $Post["id"] ?>" class="ui form" enctype="multipart/form-data">
+        <input type="text" name="content" id="comment-content">
+        <div class="ui divider"></div>
+            <div style="text-align:right">
+                <button class="ui huge inverted blue button" type="submit" id="sbmt"> publish </button>  
+            </div>
+        </form>
+    </div>
+    <?php 
+        $req=$pdo->prepare('SELECT id, UID, content, unix FROM ultraverse.posts_comments WHERE PID = :id ORDER BY unix DESC;');
+        $req->execute([
+            ":id"      => $ID,
+        ]);
 
+        while ($msg = $req->fetch()) {  ?>
 
+            <div class="ui segment">
+                <h3><a style="color:white" href="/users/<?= $msg["UID"] ?>"><img src="/avatars/<?= $msg["UID"] ?>" style="height: 1.5em;margin-bottom: -0.4em;margin-right: 0.5em;border-radius: 5em;"><?= GetUserData($msg["UID"])["username"] ?></a><a onclick="reply(<?= $msg["id"] ?>)" style="float:right" class="ui small inverted green button">Reply</a></h3>
+                <div class="ui divider"></div>
+                <p><?= $msg["content"] ?></p>
+                <p style="text-align:right;color: var(--highLight-bg);"><?= GetRelativeTime($msg["unix"]) ?></p>
+                <div id="comment-<?= $msg["id"] ?>"></div>
+            </div>
+            <?php 
+                $r=$pdo->prepare('SELECT UID, content, unix FROM ultraverse.posts_comments WHERE CID = :id ORDER BY unix DESC;');
+                $r->execute([
+                    ":id"      => $msg["id"],
+                ]);
+                while ($rep = $r->fetch()) { ?>
+            <div style="width: 90%;margin-left: 10%;" class="ui raised segment">
+            <h3><a style="color:white" href="/users/<?= $rep["UID"] ?>"><img src="/avatars/<?= $rep["UID"] ?>" style="height: 1.5em;margin-bottom: -0.4em;margin-right: 0.5em;border-radius: 5em;"><?= GetUserData($rep["UID"])["username"] ?></a><span style="float:right;color: var(--highLight-bg);font-size: small;"><?= GetRelativeTime($rep["unix"]) ?></span></h3>
+                <div class="ui divider"></div>
+                <p><?= $rep["content"] ?></p>
+                
+        </div>
+            <?php } ?>
 
-
+    <?php } ?>
+<script>
+    function reply(id) {
+        $('[id^="comment-"]').html("");
+        $('#comment-'+id).html('<form method="post" class="ui form" action="/posts/<?= $Post["id"] ?>"><input type="text" name="content"><input type="text" style="display:none" value="'+id+'" name="cid"><div style="text-align:right"><button style="margin: 1em 1em -1.5em 0em;" class="ui mini inverted green button" type="submit">reply</button></div>  </form>')
+    }
+</script>
 <?php GenerateFooter(); ?>
  

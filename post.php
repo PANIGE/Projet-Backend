@@ -13,15 +13,16 @@
             $author = GetID();
             $post_title = htmlspecialchars($_POST['title']);
             $post_message = nl2br(htmlspecialchars($_POST['message']));
-
-            $store_post = $pdo->prepare("INSERT INTO posts(UID,title,message)VALUES(:UID,:title,:message)");
+            
+            $store_post = $pdo->prepare("INSERT INTO posts (UID, title, message, unix)VALUES(:UID, :title, :message, :time)");
             $store_post->execute([
                 ":UID"     => $author,
                 ":title"   => $post_title,
                 ":message" => $post_message,
+                ":time"    => time(),
             ]);
             $req = $pdo->prepare('SELECT LAST_INSERT_ID() id;');
-            $req->execute();
+            $req->execute(); 
             $id = $req->fetch(PDO::FETCH_ASSOC)["id"];
             $uploaddir = $uploaddir = $_SERVER['DOCUMENT_ROOT']."/postsStorage/".$id.".png";
 
@@ -51,6 +52,7 @@
             <input tabindex="1" type="file" id="file" style="display:none" required="" accept="image/*" name="pub" onchange="UpdateImg(event)">
             <div class="title_part">
                 <h1 id="newpost">New post</h1>
+
                 
                 <input tabindex="2" type="text" name="title" id="ttl" placeholder="Title Your Message"></input>
             </div>
