@@ -34,6 +34,10 @@
             die();
         }
 
+        $query = $pdo->prepare('UPDATE `ultraverse`.`users` SET `enabled` = 1 WHERE (`id` = :id);');
+        $query->execute([
+            ":id"   => $id,
+        ]);
 
         $token = "";
         $found = false;

@@ -7,6 +7,7 @@ RewriteRule ^banners/(.*) /banners.php?id=$1 [B]
 RewriteRule ^users/(.*) /profile.php?id=$1 [B]
 RewriteRule ^posts/(.*) /posts.php?id=$1 [L]
 RewriteRule ^chat/(.*) /chat_r.php?chan=$1 [B]
+RewriteRule ^groups/(.*) /groups.php?id=$1 [B]
 
 RewriteCond %{REQUEST_FIBENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]

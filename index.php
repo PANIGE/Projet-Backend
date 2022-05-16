@@ -24,7 +24,11 @@
          if (sizeof($posts) == 0 ) {
          ?>
             <div class="ui segment">It seems you don't follow anybody, why don't you say hi in our <a style="margin-left: 1em" class="ui small blue inverted button" href="/chat/%23general">general chat</a></div>
-         <?php }  else { foreach ($posts as $post) { ?>
+         <?php }  else { foreach ($posts as $post) { 
+               if (GetUserData($post["UID"])["enabled"] != 1) {
+                  continue;
+              }
+            ?>
                 <a href="/posts/<?= $post["id"] ?>" style="color:white;" >
                     <div class="ui raised segment" style="margin: 0 0 0.5em 0;">
                         <h2><?= $post["title"]; ?>

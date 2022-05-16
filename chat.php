@@ -27,7 +27,10 @@
 
     echo "<h3 class=\"ui horizontal header divider\">Private chat</h3>";
 
-    foreach ($data as $t) { ?>
+    foreach ($data as $t) { 
+        if (GetUserData($t["to"])["enabled"] != 1) {
+            continue;
+        }?>
         <div class="ui segment">
             <a class="ui blue inverted button" href="/chat/<?=$t["to"]?>">Contact</a> 
             <img style="height:3em;margin-bottom:-1em;margin-right: 0.5em;border-radius: 500rem;" src="/avatars/<?= $t["to"] ?>"> 

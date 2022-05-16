@@ -3,7 +3,7 @@
     require_once("./php/generalHelper.php");
     require_once("./php/sql.php");
     $pdo = getpdo();
-
+    RequireLogin();
     $ID = $_GET["id"];
     $Group = GetGroupData($ID);
     GenerateHeader("../../banners/".$ID, "Group Profil", 200);
@@ -11,23 +11,31 @@
     $self = GetID();
 
 
-    $selectuser = $pdo->prepare("SELECT UID FROM user_groups WHERE GID = :id");
+    $selectuser = $pdo->prepare("SELECT UID, COUNT(*) `count` FROM user_groups WHERE GID = :id");
     $selectuser->execute([
         ":id"   => $ID,
     ]);
-    $group_membre = $selectuser->fetchAll();
+    $users = $selectuser->fetchAll(PDO::FETCH_ASSOC);
 
-    $nb_user = $pdo->prepare("SELECT COUNT(*) rows FROM user_groups WHERE GID = :id");
-    $nb_user->execute([
+    $userInGroup = false;
+    foreach($users as $value)
+    {
+        if(array_key_exists('UID', $value) && $value["UID"] == $self)
+        {
+            $userInGroup = true;
+        }
+    }
+    
+
+
+    $req =$pdo->prepare("SELECT name, is_private FROM groups WHERE id = :id");
+    $req->execute([
         ":id" => $ID,
     ]);
-    $numbre_users = $nb_user->fetchAll();
 
-    $priv =$pdo->prepare("SELECT is_private FROM groups WHERE id = :id");
-    $priv->execute([
-        ":id" => $ID,
-    ]);
-    $private = $priv->fetchAll();
+    $group = $req->fetch(PDO::FETCH_ASSOC);
+
+    
 ?>
 
 <div class="ui container">
@@ -40,8 +48,8 @@
             
             </div>
                 <div class="stats">
-                    <h1 class="username"><?= $Group["name"] ?></h1>
-                    <h1 style="margin: 0;color: #5f5;text-shadow: 0 0 6px black;"><?= $numbre_users ?></h1>
+                    <h1 class="username"><?= $group["name"]; ?> </h1>
+                    <h1 style="margin: 0;color: #5f5;text-shadow: 0 0 6px black;">Nombre de Participant (<?= $users[0]["count"] ?>)</h1>
                 </div>
                 </div>
             </div>
@@ -62,63 +70,49 @@
     
         
         <div class="right-panel">
-        <?php if ($self) { ?>
-                <a id="create-group-button" href="create_group"><div class="tab hoverable">
-                            <div class="label" friend="-1" id="friend-label" style="border: 2px solid;box-shadow: 0 0 4px 0px; position:relative; color: #494949;">
-                                <h3 id="friend-text"><i class="circular plus icon"></i>Loading</h3>
-                            </div>
-                                <i class="right chevron icon"></i>
-                            </div>
-                        </a>
-                    <?php } ?>
             <div class="ui raised segment">
-                <?php if ($group_membre == False) { 
-                    if ($private == False) {?>
-                    <div class="tab">
-                        <div class="label" style="box-shadow: 0 0 5px 1px #2558ff;background: #2558ff;position: relative;">
-                            <h3><i class="circular icon sign in icon"></i>> Join Group</time></h3>
+            <?php if (IsLog()) { ?>
+                
+                    
+                <?php if (!$userInGroup) { 
+                    if (!$group["is_private"]) {?>
+                    <input type="button"><a id="interact-group" onclick="ManageGroup('join')" >
+                        <div class="tab hoverable">
+                            <div class="label" style="box-shadow: 0 0 5px 1px #2558ff;background: #2558ff;position: relative;">
+                                <h3><i class="circular icon sign in icon"></i>Join Group</time></h3>
+                            </div>
                         </div>
-                    </div>
-                <?php } ?>
-
-                <?php if ($private == True) {?>
-                    <div class="tab">
-                        <div class="label" style="box-shadow: 0 0 5px 1px #2558ff;background: #2558ff;position: relative;">
-                            <button><h3><i class="circular icon sign in icon"></i>> Demande To Join Group</time></h3></button>
+                    </a></input>
+                <?php } else {?>
+                    <a id="interact-group" onclick="ManageGroup('join')">
+                        <div class="tab hoverable">
+                            <div class="label" style="box-shadow: 0 0 5px 1px #2558ff;background: #2558ff;position: relative;">
+                                <h3><i class="circular icon sign in icon"></i>Ask to join</time></h3>
+                            </div>
                         </div>
-                    </div>
-                <?php } }?>
-
-                <?php if ($group_membre == True) { ?>
-                    <div class="tab">
-                        <div class="label" style="box-shadow: 0 0 5px 1px #2558ff;background: #2558ff;position: relative;">
-                            <button><h3><i class="circular icon sign in icon"></i>> Quit Group</time></h3></button>
+                    </a>
+                <?php } } else { ?>
+                    <a id="interact-group" onclick="ManageGroup('left')">
+                        <div class="tab hoverable">
+                            <div class="label" style="box-shadow: 0 0 5px 1px #2558ff;background: #2558ff;position: relative;">
+                                <h3><i class="circular icon sign in icon"></i>Quit Group</time></h3>
+                            </div>
                         </div>
-                    </div>
-                <?php } ?>
+                    </a>
+                <?php } } ?>
             </div>
         </div>
  
         <script>
-        $.get("/api/friend?id=<?= $ID ?>", (d, s) => {
-            $d = $.parseJSON(d);
-            console.log($d.status)
-            switch ($d.status) {
-                case 0:
-                    $("#friend-label").css("color", "#00ffee");
-                    $("#friend-text").html("<i class=\"circular plus icon\"></i>Join Group");
-                    $("#friend-label").attr("friend", "0");
-                    break;
-                case 1:
-                    $("#friend-label").css("color", "rgb(49 255 0)");
-                    $("#friend-text").html("<i class=\"circular user icon\"></i>Quit Group");
-                    $("#friend-label").attr("friend", "0");
-                    break;
+        function ManageGroup(type) {
+            if (type == "left" && window.confirm("Are you sure you want to quit the group ?")) {
+                $.post("/api/group-manage?type="+type+"&group=<?= $ID ?>")
             }
-        });
-        $("#create-group-button").click(()=> {
+            else if (type != "left") {
+                $.post("/api/group-manage?type="+type+"&group=<?= $ID ?>")
+            }
             
-        });
+        };
     </script>   
 
 <?php GenerateFooter(); ?>

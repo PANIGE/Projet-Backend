@@ -30,6 +30,9 @@
     while($message = $load_chat->fetch()){
         
         $user = GetUserData($message["UID"]);
+        if ($user["enabled"] != 1) {
+            continue;
+        }
         $id = $message["UID"];
         $self = $id == GetID();
         $images = [];
@@ -69,13 +72,14 @@
                         break;  
                     }
                 ?>    
-                </h4></a> <?=htmlspecialchars_decode($message['message']);?><?php 
+                </h4></a><?=htmlspecialchars_decode($message['message']);?><?php 
                 foreach ($images as $im) {
                     echo "<img style=\"height: 32em;width: fit-content;\" src=\"".$im."\" />";
                 }
                 ?>
                 <?php if ($self == $id) {?>
-                <a id="delete-icon" onclick="delete_msg(<?= $message["ID"] ?>)"><i class="trash icon" style="position:absolute;right: 1em;top: 1em;"></i></a>
+                <a id="delete-icon" class="ui mini red inverted button" style="position:absolute;right: 1em;top: 1em;height: 2.5em;width: 2.5em;" onclick="delete_msg(<?= $message["ID"] ?>)"><i class="trash icon" style="margin-left: -0.7em;"></i></a>
+                <a id="change_message" class="ui mini blue inverted button" style="position:absolute;right: 4.7em;top: 1em;" onclick="edit_msg(<?= $message["ID"] ?>)">Edit</a>
                     
                 <?php } ?>
             </div>

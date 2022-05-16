@@ -56,7 +56,7 @@
  <form id="chat" class="ui form" method="post" action="<?= $_SERVER['REQUEST_URI'] ?>" >
 
     <div class="field">    
-        <input type="text" name="chat" placeholder="send message" required id="messageInput">
+        <input id type="text" name="chat" placeholder="send message" required id="messageInput">
     </div>
     
         <section id="message">
@@ -96,8 +96,12 @@
 
         function delete_msg(id) {
             $.post("/api/message_delete?id="+id);
-            
         }
+
+        function edit_msg(id) {
+        
+        }
+        
 
     </script>
 </form>

@@ -7,7 +7,7 @@
 
     $ID = $_GET["id"];
     $User = GetUserData($ID);
-    if (!$User) {
+    if (!$User || $User["enabled"] != 1) {
         http_response_code(404);
         echo render_php('404.php');
         die();

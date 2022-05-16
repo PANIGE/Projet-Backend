@@ -35,13 +35,13 @@
             ]);
         }
 
-
+        
 
 
         http_response_code(302);
         header("location:".$_SERVER['REQUEST_URI']);
     }
-
+    
     GenerateHeader("default.jpg", "publication", 220);
     RequireLogin();
     
@@ -75,7 +75,7 @@
             </div>
 
         </div>
-
+        
         <div class="ui divider"></div>
 
         <div class = "content" >
@@ -121,7 +121,7 @@
                 <div id="comment-<?= $msg["id"] ?>"></div>
             </div>
             <?php 
-                $r=$pdo->prepare('SELECT UID, content, unix FROM ultraverse.posts_comments WHERE CID = :id ORDER BY unix DESC;');
+                $r=$pdo->prepare('SELECT UID, content, unix FROM ultraverse.posts_comments WHERE CID = :id ORDER BY unix ASC;');
                 $r->execute([
                     ":id"      => $msg["id"],
                 ]);

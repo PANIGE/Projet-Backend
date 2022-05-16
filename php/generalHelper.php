@@ -161,13 +161,17 @@ function IsImage( $url ){
   
 function GetGroupData($id) {
     require_once($_SERVER['DOCUMENT_ROOT']."/php/sql.php");
-     $pdo = GetPDO();
+    $pdo = GetPDO();
 
-    $req = $pdo->prepare("SELECT * FROM groups WHERE id = :id");
-    $req->execute([
-        ":id" => $id
-    ]);
-    $data = $req->fetch(PDO::FETCH_ASSOC);
+   $req = $pdo->prepare("SELECT * FROM groups WHERE id = :id");
+   $req->execute([
+       ":id" => $id
+   ]);
+   
+   $data = $req->fetchAll(PDO::FETCH_ASSOC);
+   if (!$data) {
+       return;
+   }
 }
 
 // https://stackoverflow.com/questions/34593130/render-php-file-into-string-variable
