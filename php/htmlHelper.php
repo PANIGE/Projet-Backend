@@ -60,6 +60,8 @@
                if (IsLog()) {
                   Item("Chat", "/chat");
                   Item("Make a post", "/post");
+                  Item("blog","/blog");
+                  Item("blog_new","/blog_new");
                }
 /* -------------------------------------------------------------------------- */
 

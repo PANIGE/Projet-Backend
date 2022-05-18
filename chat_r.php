@@ -1,4 +1,4 @@
-<?php 
+ <?php 
     require_once("./php/htmlHelper.php");
     require_once("./php/sql.php");
     $pdo = GetPDO();
@@ -51,10 +51,10 @@
 
 ?>
 <div id="chatdiv" style="height: 72%;overflow: scroll;">
-    <div id="message"></div>
+        <div id="message"></div>
 </div>
  <form id="chat" class="ui form" method="post" action="<?= $_SERVER['REQUEST_URI'] ?>" >
-
+    
     <div class="field">    
         <input id type="text" name="chat" placeholder="send message" required id="messageInput">
     </div>
@@ -99,7 +99,8 @@
         }
 
         function edit_msg(id) {
-        
+            $msg = prompt("Edit your message", $("#msg-"+id).attr("cont"))
+            $.post("/api/edit?id="+id+"&msg="+$msg);
         }
         
 

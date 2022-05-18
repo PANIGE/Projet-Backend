@@ -59,6 +59,8 @@
     $user_name = $User["username"];
     //GetRelativeTime(unix) -> "X time ago"
     $postFormattedDate = date("F j, Y" ,$Post["unix"]);
+
+    
 ?>
 
     <div class = "ui raised segment" >
@@ -100,6 +102,7 @@
         <form method="post" action="/posts/<?= $Post["id"] ?>" class="ui form" enctype="multipart/form-data">
         <input type="text" name="content" id="comment-content">
         <div class="ui divider"></div>
+            <button></button>
             <div style="text-align:right">
                 <button class="ui huge inverted blue button" type="submit" id="sbmt"> publish </button>  
             </div>

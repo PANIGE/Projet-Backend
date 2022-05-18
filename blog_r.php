@@ -10,18 +10,17 @@ require_once("./php/htmlHelper.php");
 require_once("./php/sql.php");
 GenerateHeader("homepage.jpg", "blog");
 $pdo = GetPDO();
-$ID=$_GET[id];
+$ID=$_GET["id"];
 if (!isset($ID) || !is_numeric($ID) ) {
     http_response_code(404);
     header('location:/index?er=This%20post%20does%not%exist');
 }
 else{
-    $query=$pdo->prepare('SELECT `name`,`htmlcontent` where id=:id');
-    $query->execure([
+    $query=$pdo->prepare('SELECT `name`,`htmlcontent` FROM blog where id=:id');
+    $query->execute([
         ':id' =>$ID
     ]);
     $data = $query->fetch(PDO::FETCH_ASSOC);
     echo $data["htmlcontent"];
 }
-
-GenerateFooter(); ?>
+?>

@@ -49,7 +49,7 @@
         }
 
         ?>
-        <div class="channel-message-tab" style="position:relative;" id=<?= $message["ID"] ?>>
+        <div class="channel-message-tab" style="position:relative;" id="msg-<?= $message["ID"] ?>" cont="<?= htmlentities($message["message"]) ?>">
             <a href="/users/<?= $id?>"><img class="channel-message-avatar" src="/avatars/<?= $id?>"></a>
             
             <div class="channel-message-box"> <a href="/users/<?= $id?>"><h4>
