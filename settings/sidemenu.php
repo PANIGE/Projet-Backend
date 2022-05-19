@@ -9,5 +9,6 @@ require_once($_SERVER['DOCUMENT_ROOT']."/php/navbar.php");
 		<?php Item("Avatar", "/settings/avatar"); ?>
 		<?php Item("Banner", "/settings/banner"); ?>
 		<?php Item("Delete", "/settings/Delete"); ?>
+		<?php Item("Private", "/settings/Private"); ?>
         </div>
 </div>

@@ -49,6 +49,7 @@
         die();
     }
 
+
 ?>
 <div id="chatdiv" style="height: 72%;overflow: scroll;">
         <div id="message"></div>

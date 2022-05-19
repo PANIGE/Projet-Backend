@@ -82,7 +82,7 @@
             <?php foreach ($data as $post) { ?>
                 <a href="/posts/<?= $post["id"] ?>" style="color:white;" >
                     <div class="ui raised segment" style="margin: 0 0 0.5em 0;">
-                        <h2><?= $post["title"]; ?> <span style="float: right;color: #ffffff85;"><?= GetRelativeTime($post["unix"]); ?></span> </h2><div class="ui divider"></div><p> <?= $post["message"] ?> </p>                 <div style="text-align: center;background: var(--background-hue);border-radius: .5em;">
+                        <h2><?= ParseEmotes($post["title"]); ?> <span style="float: right;color: #ffffff85;"><?= GetRelativeTime($post["unix"]); ?></span> </h2><div class="ui divider"></div><p> <?= ParseEmotes($post["message"]) ?> </p>                 <div style="text-align: center;background: var(--background-hue);border-radius: .5em;">
                            <img style="max-height:50em" src="/postsStorage/<?= $post["id"] ?>.png">
                         </div>
                     </div>

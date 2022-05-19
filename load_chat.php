@@ -72,7 +72,7 @@
                         break;  
                     }
                 ?>    
-                </h4></a><?=htmlspecialchars_decode($message['message']);?><?php 
+                </h4></a><?= parseEmotes(htmlspecialchars_decode($message['message']));?><?php 
                 foreach ($images as $im) {
                     echo "<img style=\"height: 32em;width: fit-content;\" src=\"".$im."\" />";
                 }

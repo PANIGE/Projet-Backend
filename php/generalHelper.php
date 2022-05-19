@@ -208,3 +208,16 @@ function GeneratePost($array) {
     } 
 }
 */
+
+function ParseEmotes($string) {
+    $emotes = [
+        ":)" => '<img style="height:1.25em;margin-bottom: -0.25em;width:1.25em;display:inline-block" src="/static/emotes/happy.png"/>',
+        "<3" => '<img style="height:1.25em;margin-bottom: -0.25em;" src="/static/emotes/heart.svg"/>',
+        ":(" => '<img style="height:1.25em;margin-bottom: -0.25em;" src="/static/emotes/sad.png"/>',
+        "x)" => '<img style="height:1.25em;margin-bottom: -0.25em;width:1.25em;display:inline-block" src="/static/emotes/laugh.png"/>',
+        ":@" => '<img style="height:1.25em;margin-bottom: -0.25em;width:1.25em;display:inline-block" src="/static/emotes/rage.png"/>',
+    ];
+    return str_replace(array_keys($emotes), array_values($emotes), $string);
+
+
+}

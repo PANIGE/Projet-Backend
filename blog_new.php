@@ -24,16 +24,32 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 ?>
 
 <form class="ui form" action="/blog_new" method="post">
-    <input type="text" name="title"><br/>
-    <textarea id="content" name="htmlcontent" columns="100" rows="20" onkeyup="updatehtml()"></textarea>
-    <input type="submit" value="publish"/>
+    <input type="text" name="title" placeholder="title"><br/>
+    <div class="ui divider"></div>
+    <input id="descrip" onkeyup="conteur()" type="text" placeholder="description" maxlength="240">
+    <span id="conteur" style="position:absolute; right:0; width:20px ;height:20px;"></span>
+
+    <div class="ui divider"></div>
+    <textarea id="content" name="htmlcontent" placeholder="article" columns="100" rows="20" onkeyup="updatehtml()"></textarea>
+    <div class="ui divider"></div>
+    
+    <button style="float:right" type="submit" class="ui blue huge inverted button">publish</button>
 </form>
-<div class="ui divider"></div>
+
 <div id="preview"></div>
 
 <script>
     function updatehtml() {
         $('#preview').html($("#content").val());
     }
-    
+    function conteur(){  
+        const input        = document.getElementById('descrip');
+        const maxlength    = parseInt(input.getAttribute("maxlength"));
+        const conteur      = document.getElementById('conteur');
+        const len          = input.value.length;
+        const difference   = maxlength - len; 
+        conteur.innerHTML  = difference;
+        };
+
+
 </script>

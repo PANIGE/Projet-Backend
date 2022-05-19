@@ -7,6 +7,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $type = $_GET["type"];
     $GID = $_GET["group"];
     $SID=GetID();
+    $UID = $_GET["id"];
 
     if ($type == "join") {
         $priv = $pdo->prepare("SELECT is_private FROM groups WHERE id = :id");
@@ -15,7 +16,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         ]);
         $private = $priv->fetch(PDO::FETCH_ASSOC);
         if ($private['is_private']){
-            echo "<script>alert();</script>";
             $join = $pdo->prepare("INSERT INTO user_groups (UID, GID, rank, pending) value (:UID, :GID, 0, 1)");
             $join->execute([
                 ":UID" => $SID,
@@ -39,5 +39,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             ":UID" => $SID,
         ]);
         $left_group = $left->fetchAll();
+    }
+    if($type == 'Accept'){
+        $accept = $pdo->prepare("UPDATE user_groups SET pending = 0 WHERE UID = :UID AND GID = :GID");
+        $accept->execute([
+            ':UID' => $UID,
+            ':GID' => $GID,
+        ]);
+    }
+    if($type == 'Reject'){
+        $accept = $pdo->prepare("DELETE FROM user_groups WHERE UID = :UID AND GID = :GID");
+        $accept->execute([
+            ':UID' => $UID,
+            ':GID' => $GID,
+        ]);
     }
 }

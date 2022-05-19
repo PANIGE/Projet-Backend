@@ -10,17 +10,23 @@
 
     $self = GetID();
 
-    $selectuser = $pdo->prepare("SELECT UID, COUNT(*) `count`, pending, rank FROM user_groups WHERE GID = :id ");
+    $selectuser = $pdo->prepare("SELECT UID, pending, rank FROM user_groups WHERE GID = :id ");
     $selectuser->execute([
         ":id"   => $ID,
     ]);
     $users = $selectuser->fetchAll(PDO::FETCH_ASSOC);
 
+    $select_rank = $pdo->prepare("SELECT rank FROM user_groups WHERE UID = :id AND GID = :gid");
+    $select_rank->execute([
+        ":id" => $self,
+        ":gid" => $ID,
+    ]);
+    $rank = $select_rank->fetchAll();
+
     $userInGroup = false;
     $pending = false;
     $nb_users = 0;
-    foreach($users as $value)
-    {
+    foreach($users as $value){
         if(array_key_exists('UID', $value) && $value["UID"] == $self)
         {
             $userInGroup = true;
@@ -32,7 +38,6 @@
     }
 
 
-
     $req =$pdo->prepare("SELECT name, is_private FROM groups WHERE id = :id");
     $req->execute([
         ":id" => $ID,
@@ -40,11 +45,17 @@
 
     $group = $req->fetch(PDO::FETCH_ASSOC);
 
-    $asker = $pdo->prepare("SELECT username FROM users WHERE id = (SELECT UID FROM user_groups WHERE GID = :id AND pending = 1)");
-    $asker->execute([
-        ":id" => $ID,
+    $id_asker = $pdo->prepare("SELECT UID FROM user_groups WHERE GID = :gid AND pending = 1");
+    $id_asker->execute([
+        ":gid" => $ID,
     ]);
-    $name_asker = $asker->fetch(PDO::FETCH_ASSOC);
+    $ID_asker = $id_asker->fetchAll(PDO::FETCH_ASSOC);
+    
+    $asker = $pdo->prepare("SELECT username, id FROM users WHERE id IN (SELECT UID FROM user_groups WHERE GID = :gid AND pending = 1)");
+    $asker->execute([
+        ":gid" => $ID,
+    ]);
+    $name_asker = $asker->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <div class="ui container">
@@ -85,7 +96,7 @@
                     
                 <?php if (!$userInGroup) { 
                     if (!$group["is_private"]) {?>
-                    <a id="interact-group" onclick="ManageGroup('join')" >
+                    <a id="interact-group" onclick="ManageGroup('join', 0)" >
                         <div class="tab hoverable">
                             <div class="label" style="box-shadow: 0 0 5px 1px #2558ff;background: #2558ff;position: relative;">
                                 <h3><i class="circular icon sign in icon"></i>Join Group</time></h3>
@@ -93,7 +104,7 @@
                         </div>
                     </a>
                 <?php } else {?>
-                    <a id="interact-group" onclick="ManageGroup('join')">
+                    <a id="interact-group" onclick="ManageGroup('join', 0)">
                         <div class="tab hoverable">
                             <div class="label" style="box-shadow: 0 0 5px 1px #2558ff;background: #2558ff;position: relative;">
                                 <h3><i class="circular icon sign in icon"></i>Ask to join</time></h3>
@@ -102,7 +113,7 @@
                     </a>
                 <?php } } else { 
                     if ($pending) {?>
-                    <a id="interact-group" onclick="ManageGroup('left')">
+                    <a id="interact-group" onclick="ManageGroup('left', 0)">
                         <div class="tab hoverable">
                             <div class="label" style="box-shadow: 0 0 5px 1px #2558ff;background: #2558ff;position: relative;">
                                 <h3><i class="circular icon sign in icon"></i>Cancel Request</time></h3>
@@ -110,7 +121,7 @@
                         </div>
                     </a>
                     <?php } else { ?>
-                        <a id="interact-group" onclick="ManageGroup('left')">
+                        <a id="interact-group" onclick="ManageGroup('left', 0)">
                         <div class="tab hoverable">
                             <div class="label" style="box-shadow: 0 0 5px 1px #2558ff;background: #2558ff;position: relative;">
                                 <h3><i class="circular icon sign in icon"></i>Quit Group</time></h3>
@@ -118,23 +129,42 @@
                         </div>
                     </a>
                 <?php } } 
-                if ($users[0]["rank"] == 1){
+                if($group["is_private"] && $name_asker){
+                if ($rank){
                     foreach ($name_asker as $ask){
-                        print($ask);
+                        $id_asker = $ask['id'];
+                        print($ask["username"]);?>
+                        <a id="interact-group" onclick="ManageGroup('Accept', <?= $id_asker ?>)" >
+                        <div class="tab hoverable">
+                            <div class="label" style="box-shadow: 0 0 5px 1px #2558ff;background: #2558ff;position: relative;">
+                                <h3><i class="circular icon sign in icon"></i>Accept</time></h3>
+                            </div>
+                        </div>
+                        <a id="interact-group" onclick="ManageGroup('Reject', <?= $id_asker ?>)" >
+                        <div class="tab hoverable">
+                            <div class="label" style="box-shadow: 0 0 5px 1px #2558ff;background: #2558ff;position: relative;">
+                                <h3><i class="circular icon sign in icon"></i>Reject</time></h3>
+                            </div>
+                        </div>
+                    </a>
+
+                    <?php    print("<br>");
+
                     }
-                 } ?>
+                 }
+                }?>
             </div>
         </div>
  
         <script>
   
-        function ManageGroup(type) {
+        function ManageGroup(type, id) {
             if (type == "left" && window.confirm("Are you sure you want to quit the group ?")) {
-                $.post("/api/group-manage?type="+type+"&group=<?= $ID ?>")
+                $.post("/api/group-manage?type="+type+"&group=<?= $ID ?>&id="+id+"")
                 location.reload();
             }
             else if (type != "left") {
-                $.post("/api/group-manage?type="+type+"&group=<?= $ID ?>")
+                $.post("/api/group-manage?type="+type+"&group=<?= $ID ?>&id="+id+"")
                 location.reload();
             }
             
