@@ -14,6 +14,22 @@ function RequireLogin() {
     }
 }
 
+function RequireAdmin() {
+    RequireLogin();
+    if (Context()["User"]["rank"] < 3) {
+        http_response_code(403);
+        die();
+    }
+}
+
+function IsAdmin() {
+    if (!IsLog()) 
+        return false;
+    if (Context()["User"]["rank"] < 3) 
+        return false;
+    return true;
+}
+
 function GetID() {
     $pdo = getPDO();
 

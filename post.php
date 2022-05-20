@@ -50,7 +50,7 @@
 
 <html>
     <div class="ui centered segment">
-        <form method="POST" class="ui form" enctype="multipart/form-data">
+        <form method="POST" class="ui form" enctype="multipart/form-data">    
             <input tabindex="1" type="file" id="file" style="display:none" required="" accept="image/*" name="pub" onchange="UpdateImg(event)">
             <div class="title_part">
                 <h1 id="newpost">New post</h1>

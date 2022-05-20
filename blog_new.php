@@ -2,17 +2,21 @@
 //le FORM a faire pour creer un article
 //qui va le rentrer dans la DB
 require_once("./php/htmlHelper.php");
+require_once("./php/GeneralHelper.php");
+RequireAdmin();
 require_once("./php/sql.php");
 $pdo = GetPDO();
 GenerateHeader("homepage.jpg", "blog");
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    if(!empty($_POST['title']) && !empty($_POST['htmlcontent'])) {
-        $title=htmlspecialchars($_POST['title']);
+    if(!empty($_POST['title']) && !empty($_POST['htmlcontent']) && !empty($_POST['descrip'])) {
+        $title  =htmlspecialchars($_POST['title']);
         $content=htmlspecialchars($_POST['htmlcontent']);
+        $decrip =htmlspecialchars($_POST['descrip']);
         $query=$pdo->prepare('INSERT INTO blog (name , htmlcontent, description) VALUE (:title , :content, :description)');
         $query->execute([
-            ":title"  =>$title,
-            "content" =>$content,
+            ":title"       =>$title,
+            ":content"     =>$content,
+            ":description" =>$decrip,
         ]);
         die();
     }else {
@@ -26,8 +30,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <form class="ui form" action="/blog_new" method="post">
     <input type="text" name="title" placeholder="title"><br/>
     <div class="ui divider"></div>
-    <input id="descrip" onkeyup="conteur()" type="text" placeholder="description" maxlength="240">
-    <span id="conteur" style="position:absolute; right:0; width:20px ;height:20px;"></span>
+    <input id="descrip" name="descrip"onkeyup="conteur()" type="text" placeholder="description" maxlength="240">
+    <span id="conteur" style="position:absolute; right:0; width:20px ;height:20px; margin:20px"></span>
 
     <div class="ui divider"></div>
     <textarea id="content" name="htmlcontent" placeholder="article" columns="100" rows="20" onkeyup="updatehtml()"></textarea>

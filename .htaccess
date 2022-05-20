@@ -9,7 +9,7 @@ RewriteRule ^pavatars/(.*) /defaultStorage.php?fold=pageAvatars&id=$1 [B]
 RewriteRule ^pbanners/(.*) /defaultStorage.php?fold=pageBanners&id=$1 [B]
 
 RewriteRule ^users/(.*) /profile.php?id=$1 [B]
-RewriteRule ^page/(.*) /page.php?id=$1 [B]
+RewriteRule ^pages/(.*) /page.php?id=$1 [NC,QSA,L]
 RewriteRule ^posts/(.*) /posts.php?id=$1 [L]
 RewriteRule ^chat/(.*) /chat_r.php?chan=$1 [B]
 RewriteRule ^groups/(.*) /groups.php?id=$1 [B]

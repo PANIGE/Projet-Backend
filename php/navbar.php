@@ -1,7 +1,7 @@
 <?php
 
-function Item($name, $href) {
-    $a = (($_SERVER['REQUEST_URI']) == $href ? "active" : "");
+function Item($name, $href, $activate=true) {
+    $a = ((($_SERVER['REQUEST_URI']) == $href && $activate) ? "active" : "");
     echo '<a class="'.$a.' item" href="'.$href.'">'.$name.'</a>';
 }
 

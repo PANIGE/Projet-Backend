@@ -59,9 +59,18 @@
                Item("home", "/");
                if (IsLog()) {
                   Item("Chat", "/chat");
+                  
                   Item("Make a post", "/post");
-                  Item("blog","/blog");
-                  Item("blog_new","/blog_new");
+                  if (IsAdmin()) {
+                     echo '<div class="ui dropdown item"><span>Blog</span><div class="menu">';
+                        Item("blog","/blog", false);
+                        Item("New blog","/blog_new", false);
+                     echo '</div></div>';
+                     
+                  } else {
+                     Item("blog","/blog");
+                  }
+                  
                }
 /* -------------------------------------------------------------------------- */
 

@@ -54,4 +54,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             ':GID' => $GID,
         ]);
     }
+    if($type == 'name'){
+        $admin = $pdo->prepare("SELECT rank FROM user_groups WHERE UID = :UID");
+        $admin->execute([
+            ':UID' => $SID,
+        ]);
+        $Admin = $admin->fetchAll(PDO::FETCH_ASSOC);
+        if(Âdmin["rank"] == 1){
+            $name = $pdo->prepare("UPDATE groups SET name = :name WHERE id = :id");
+            $name->execute([
+                ':name' => $UID,
+                ':id' => $GID,
+            ]);
+        }
+    }
 }

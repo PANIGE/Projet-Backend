@@ -136,6 +136,7 @@
         .green{color: green;}
 
         .red{color: red;}
+        
         .emote{
             color:black;
             font-size: 1.5rem;

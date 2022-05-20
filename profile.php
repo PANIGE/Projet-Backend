@@ -21,7 +21,16 @@
     $badges = $r->fetchAll(PDO::FETCH_ASSOC);
 
     $self = $ID == GetID();
-
+    $friend=$pdo->prepare('SELECT `to` FROM ultraverse.relations where fro = :id');
+    $friend->execute([
+        ":id"=> $User["id"],
+    ]);
+    $friend_all = $friend->fetchAll();
+    $reqPrivate=$pdo->prepare('SELECT private FROM users WHERE ID = :id ');
+    $reqPrivate->execute([
+        ":id"=> $ID,
+    ]);
+    $private = $reqPrivate->fetch();
 
     $req = $pdo->prepare("SELECT * FROM ultraverse.posts where UID = :uid order by unix DESC LIMIT 50;");
     $req->execute([
@@ -79,15 +88,18 @@
     <div class="profile-segment">
 
         <div class="left-panel">
-            <?php foreach ($data as $post) { ?>
-                <a href="/posts/<?= $post["id"] ?>" style="color:white;" >
-                    <div class="ui raised segment" style="margin: 0 0 0.5em 0;">
-                        <h2><?= ParseEmotes($post["title"]); ?> <span style="float: right;color: #ffffff85;"><?= GetRelativeTime($post["unix"]); ?></span> </h2><div class="ui divider"></div><p> <?= ParseEmotes($post["message"]) ?> </p>                 <div style="text-align: center;background: var(--background-hue);border-radius: .5em;">
-                           <img style="max-height:50em" src="/postsStorage/<?= $post["id"] ?>.png">
+            <?php if ($private == 0 or $friend== $ID ) { ?>
+                <?php foreach ($data as $post) { ?>
+                    <a href="/posts/<?= $post["id"] ?>" style="color:white;" >
+                        <div class="ui raised segment" style="margin: 0 0 0.5em 0;">
+                            <h2><?= ParseEmotes($post["title"]); ?> <span style="float: right;color: #ffffff85;"><?= GetRelativeTime($post["unix"]); ?></span> </h2><div class="ui divider"></div><p> <?= ParseEmotes($post["message"]) ?> </p>                 <div style="text-align: center;background: var(--background-hue);border-radius: .5em;">
+                            <img style="max-height:50em" src="/postsStorage/<?= $post["id"] ?>.png">
+                            </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
+                <?php } ?>
             <?php } ?>
+
         </div>
     
         

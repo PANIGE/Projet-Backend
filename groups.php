@@ -21,7 +21,7 @@
         ":id" => $self,
         ":gid" => $ID,
     ]);
-    $rank = $select_rank->fetchAll();
+    $rank = $select_rank->fetch(PDO::FETCH_ASSOC);
 
     $userInGroup = false;
     $pending = false;
@@ -68,7 +68,9 @@
 
             </div>
                 <div class="stats">
+                <a id="interact-group" onclick="ManageGroup('name', <?= $self ?>)" >
                     <h1 class="username"><?= $group["name"]; ?> </h1>
+                </a>
                     <h1 style="margin: 0;color: #5f5;text-shadow: 0 0 6px black;">Nombre de Participant (<?= $nb_users ?>)</h1>
                 </div>
                 </div>
@@ -130,7 +132,7 @@
                     </a>
                 <?php } } 
                 if($group["is_private"] && $name_asker){
-                if ($rank){
+                if ($rank["rank"] == 1){
                     foreach ($name_asker as $ask){
                         $id_asker = $ask['id'];
                         print($ask["username"]);?>
@@ -155,11 +157,15 @@
                 }?>
             </div>
         </div>
- 
+
         <script>
-  
+
         function ManageGroup(type, id) {
             if (type == "left" && window.confirm("Are you sure you want to quit the group ?")) {
+                $.post("/api/group-manage?type="+type+"&group=<?= $ID ?>&id="+id+"")
+                location.reload();
+            }
+            else if (type == "name"){
                 $.post("/api/group-manage?type="+type+"&group=<?= $ID ?>&id="+id+"")
                 location.reload();
             }
