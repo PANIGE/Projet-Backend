@@ -19,7 +19,7 @@
       <?php } else { 
          $req = $pdo->prepare("SELECT * FROM ultraverse.posts where UID in (SELECT `to` FROM ultraverse.relations where fro = :id) order by unix desc;");
          $req-> execute([":id"=>GetID()]);
-         $posts = $req->fetchAll();
+         $posts = $req->fetchAll(PDO::FETCH_ASSOC);
 
          if (sizeof($posts) == 0 ) {
          ?>

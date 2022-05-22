@@ -37,7 +37,6 @@
     ]);
     $data = $req->fetchAll();
 
-
 ?>
 
 <div class="ui container">

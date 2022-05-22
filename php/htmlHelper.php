@@ -70,6 +70,8 @@
                   } else {
                      Item("blog","/blog");
                   }
+                  Item("create a group", "/create_group");
+                  Item("list of groups", "/group_list");
                   
                }
 /* -------------------------------------------------------------------------- */

@@ -16,7 +16,7 @@
     ]);
     $users = $selectuser->fetchAll(PDO::FETCH_ASSOC);
 
-    $select_rank = $pdo->prepare("SELECT rank FROM user_groups WHERE UID = :id AND GID = :gid");
+    $select_rank = $pdo->prepare("SELECT rank, pending FROM user_groups WHERE UID = :id AND GID = :gid");
     $select_rank->execute([
         ":id" => $self,
         ":gid" => $ID,
@@ -57,11 +57,21 @@
     ]);
     $name_asker = $asker->fetchAll(PDO::FETCH_ASSOC);
 
-    $group_users = $pdo->prepare("SELECT username FROM users WHERE id IN (SELECT UID FROM user_groups WHERE GID = :gid)");
+    $group_users = $pdo->prepare("SELECT username, id FROM users WHERE id IN (SELECT UID FROM user_groups WHERE GID = :gid)");
     $group_users->execute([
         ":gid" => $ID,
     ]);
     $group_membre = $group_users->fetchAll(PDO::FETCH_ASSOC);
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        header('location:/group_post');
+    }
+
+    $req = $pdo->prepare("SELECT * FROM ultraverse.posts WHERE GID = :GID order by unix DESC LIMIT 50;");
+    $req->execute([
+        ':GID' => $ID,
+    ]);
+    $data = $req->fetchAll();
     ?>
 
 <div class="ui container">
@@ -73,12 +83,22 @@
                 <div class="rank">
 
             </div>
+            
                 <div class="stats">
                 <a id="interact-group" onclick="ManageGroup('name', <?= $self ?>)" >
                     <h1 class="username"><?= $group["name"]; ?> </h1>
                 </a>
                     <h1 style="margin: 0;color: #5f5;text-shadow: 0 0 6px black;">Nombre de Participant (<?= $nb_users ?>)</h1>
+                    <?php if ($userInGroup && $rank["pending"] == 0){ ?>
+                        <form id="group-form" class="ui form" method="post" action="/groups.php">
+                    </form>
+                    <button tabindex="3" class="ui primary button" type="submit" form="group-form">
+                    Make a post
+                </button>
+                <?php } ?>
+                
                 </div>
+
                 </div>
             </div>
             
@@ -93,10 +113,17 @@
     <div class="profile-segment">
 
         <div class="left-panel">
-            
+        <?php foreach ($data as $post) { ?>
+                    <a href="/posts/<?= $post["id"] ?>" style="color:white;" >
+                        <div class="ui raised segment" style="margin: 0 0 0.5em 0;">
+                            <h2><?= ParseEmotes($post["title"]); ?> <span style="float: right;color: #ffffff85;"><?= GetRelativeTime($post["unix"]); ?></span> </h2><div class="ui divider"></div><p> <?= ParseEmotes($post["message"]) ?> </p>                 <div style="text-align: center;background: var(--background-hue);border-radius: .5em;">
+                            <img style="max-height:50em" src="/postsStorage/<?= $post["id"] ?>.png">
+                            </div>
+                        </div>
+                    </a>
+                <?php } ?>
         </div>
-    
-        
+
         <div class="right-panel">
             <div class="ui raised segment">
             <?php if (IsLog()) { ?>
@@ -162,8 +189,34 @@
                  }
                 }
                 if($rank){
-                    if($rank["rank"] == 1){
-                        }}?>
+                if($rank["rank"] == 1){
+                    foreach ($group_membre as $value){
+                        $select_rank = $pdo->prepare("SELECT rank, pending FROM user_groups WHERE UID = :UID");
+                        $select_rank->execute([
+                            ":UID" => $value["id"],
+                        ]);
+                        $group_rank = $select_rank->fetch(PDO::FETCH_ASSOC);
+                        if($value['id'] != $self && $group_rank['pending'] != 1){
+                        print($value['username']);
+                        if($group_rank["rank"] != 1){?>
+                        <a id="interact-group" onclick="ManageGroup('Kick', <?= $value['id'] ?>)" >
+                        <div class="tab hoverable">
+                            <div class="label" style="box-shadow: 0 0 5px 1px #2558ff;background: #2558ff;position: relative;">
+                                <h3><i class="circular icon sign in icon"></i>Kick</time></h3>
+                            </div>
+                        </div>
+                        <a id="interact-group" onclick="ManageGroup('Admin', <?= $value['id'] ?>)" >
+                        <div class="tab hoverable">
+                            <div class="label" style="box-shadow: 0 0 5px 1px #2558ff;background: #2558ff;position: relative;">
+                                <h3><i class="circular icon sign in icon"></i>Admin</time></h3>
+                            </div>
+                        </div>
+                    </a>
+
+                    <?php 
+                    }print("<br>");
+                }}}}
+                        ?>
             </div>
         </div>
 

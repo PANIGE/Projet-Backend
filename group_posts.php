@@ -125,14 +125,14 @@
             <!-- <div style="text-align:center"> -->
             <div class = "option">
                 <div class= "emote_section">
-                    <button type="button"  class= "emote" id = "happy">&#128512</button>
-                    <button type="button"  class= "emote" id = "angry">&#128544</button>
-                    <button type="button"  class= "emote" id = "sad">&#128542</button>
-                    <button type="button" class= "emote" id = "emotionless">&#128528</button>
+                    <button class= "emote" id = "happy">&#128512</button>
+                    <button class= "emote" id = "angry">&#128544</button>
+                    <button class= "emote" id = "sad">&#128542</button>
+                    <button class= "emote" id = "emotionless">&#128528</button>
                 </div>
                 
                 <button class="ui huge inverted blue button" type="submit" id="sbmt"> publish </button>
-            </div> 
+            </div>
 
         </form>
     </div>
@@ -201,7 +201,6 @@
     <?php } ?>
 
 <script>
-
     const happy=document.getElementById("happy");
     const angry=document.getElementById("angry");
     const sad=document.getElementById("sad");
@@ -210,22 +209,8 @@
     var emote_text = [':)','>:(', ':(',':|'];
 
     const commentary = document.getElementById('comment-content');
-                    
-    happy.onclick = () => commentary.value = commentary.value + emote_text[0];
-    angry.onclick = () => commentary.value = commentary.value + emote_text[1];
-    sad.onclick = () => commentary.value = commentary.value +emote_text[2];
-    emotionless.onclick = () => commentary.value = commentary.value + emote_text[3];
 
-    /*likes-dislikes : working progress*/
-
-    $('.button').click(function() {
-    $('.label').html(function(i, val) { 
-      return val*1+0.5
-        });
-    });
-
-    /*likes-dislikes : working progress*/
-
+    happy.onClick = () => commentary.value = commentary.value + 'TEST';
 
 </script>
 
