@@ -14,9 +14,16 @@
 		<div class="twelve wide column">
 			<div class="ui segment">
 					<h3 class="ui header">Private</h3>
-					<p>Private or public ?</p>
+					<p>Set your account to public/private account, having a private account :</p>
+					<ul>
+						<li>Only the people you follow can see your profile</li>
+					</ul>
 					<div style="text-align: right">
-						<button class="ui huge blue inverted button" onclick="private(<?= $id ?>)" >private</button>
+						<?php if (Context()["User"]["private"] == 0) { ?>
+							<button class="ui huge blue inverted button" onclick="private(<?= $id ?>)" >Set private</button>
+						<?php } else { ?>
+							<button class="ui huge blue inverted button" onclick="private(<?= $id ?>)" >Set public</button>
+						<?php } ?>
 					</div>
 			</div>
 		</div>
@@ -24,6 +31,7 @@
 	<script>
 		function private(id) {
             $.post("/api/swap_private");
+			location.reload();
 		}
 	</script>
 </div>

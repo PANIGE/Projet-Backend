@@ -21,16 +21,15 @@
     $badges = $r->fetchAll(PDO::FETCH_ASSOC);
 
     $self = $ID == GetID();
-    $friend=$pdo->prepare('SELECT `to` FROM ultraverse.relations where fro = :id');
+    $friend=$pdo->prepare('SELECT `to` FROM ultraverse.relations where fro = :OID and `to` = :SID ');
     $friend->execute([
-        ":id"=> $User["id"],
+        ":SID"=> GetID(),
+        ":OID"=> $User["id"],
     ]);
-    $friend_all = $friend->fetchAll();
-    $reqPrivate=$pdo->prepare('SELECT private FROM users WHERE ID = :id ');
-    $reqPrivate->execute([
-        ":id"=> $ID,
-    ]);
-    $private = $reqPrivate->fetch();
+    $friend = $friend->rowCount() != 0;
+
+    
+    $private = $User["private"] == 1;
 
     $req = $pdo->prepare("SELECT * FROM ultraverse.posts where UID = :uid order by unix DESC LIMIT 50;");
     $req->execute([
@@ -38,7 +37,6 @@
     ]);
     $data = $req->fetchAll();
 
-   
 
 ?>
 
@@ -88,7 +86,8 @@
     <div class="profile-segment">
 
         <div class="left-panel">
-            <?php if ($private == 0 or $friend== $ID ) { ?>
+            
+            <?php if (!$private or $friend or $self) { ?>
                 <?php foreach ($data as $post) { ?>
                     <a href="/posts/<?= $post["id"] ?>" style="color:white;" >
                         <div class="ui raised segment" style="margin: 0 0 0.5em 0;">

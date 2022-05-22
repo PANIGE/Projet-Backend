@@ -96,8 +96,8 @@
         <div class="score">
             <script src="https://use.fontawesome.com/fe459689b4.js"></script>
 
-            <button class="btn" id="green"><i class="like" aria-hidden="true"></i></button>
-            <button class="btn" id="red"><i class="dislike" aria-hidden="true"></i></button>
+            <button class="btn" id="green"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>
+            <button class="btn" id="red"><i class="fa fa-thumbs-down" aria-hidden="true"></i></i></button>
         </div>
 
 

@@ -33,6 +33,7 @@
                 break;
             default:
                 http_response_code(400);
+                var_dump($_GET);
                 die();
                 break;
         }
@@ -55,7 +56,7 @@
 ?>
 
 <div class="ui container">
-    <div class="profile-bg" style="background-image: url('/banners/<?= $ID ?>');">
+    <div class="profile-bg" style="background-image: url('/pbanners/<?= $ID ?>');">
         <div class="overlay"></div>
         <div class="profile">
             <div class="profile-data">
@@ -107,6 +108,16 @@
                         </div>
                     </a>
                 <?php } ?>
+                <a href="#" onclick="AddAdmin()">
+                    <form id="userAdd" method="post" style="display:none" action="/pages/<?= $ID ?>?type=user" enctype="multipart/form-data" >
+                        <input type="text" id="addUser" required name="newUser">
+                    </form>
+                    <label style="display:block" class="hoverable tab">
+                        <div class="label" style="box-shadow: 0 0 5px 1px #6500ff;background: #6500ff;position: relative;">
+                            <h3><i class="circular plus icon"></i>Add User</h3>
+                        </div>
+                    </label>
+                </a>
                 <div class="ui divider"></div>
                 <?php 
                     $req = $pdo->prepare("SELECT UID FROM ultraverse.user_pages where PID = :id AND UID = :uid;");
@@ -114,7 +125,7 @@
                     if ($req->rowCount() == 1) {
                 ?>
                 <a href="#" onclick="$('#file-avatar').trigger('click')">
-                    <form id="avatar-change" method="post" style="display:none" action="<?= $_SERVER["REQUEST_URI"] ?>?type=avatar" enctype="multipart/form-data" >
+                    <form id="avatar-change" method="post" style="display:none" action="/pages/<?= $ID ?>?type=avatar" enctype="multipart/form-data" >
                         <input type="file" id="file-avatar" required accept="image/*" name="file" onchange="$('#avatar-change').submit()">
                     </form>
                     <label style="display:block" for="file-avatar" class="hoverable tab">
@@ -125,7 +136,7 @@
                 </a>
 
                 <a href="#" onclick="$('#file-banner').trigger('click')">
-                    <form id="banner-change" method="post" style="display:none" action="<?= $_SERVER["REQUEST_URI"] ?>?type=banner" enctype="multipart/form-data" >
+                    <form id="banner-change" method="post" style="display:none" action="/pages/<?= $ID ?>?type=banner" enctype="multipart/form-data" >
                         <input type="file" id="file-banner" required accept="image/*" name="file" onchange="$('#banner-change').submit()">
                     </form>
                     <label style="display:block" for="file-banner" class="hoverable tab">
@@ -134,18 +145,20 @@
                         </div>
                     </label>
                 </a>
+
+
+
                 <?php } ?>
             </div>
         </div>
     </div>
              
     <script>
-        function changeAvatar(e) {
-
-        }
-
-        function changeBanner(e) {
-            
+        function AddAdmin() {
+            $username = prompt("Input");
+            if ($username != null) {
+                $("addUser")
+            }
         }
     </script>   
     

@@ -56,10 +56,16 @@
         ":gid" => $ID,
     ]);
     $name_asker = $asker->fetchAll(PDO::FETCH_ASSOC);
-?>
+
+    $group_users = $pdo->prepare("SELECT username FROM users WHERE id IN (SELECT UID FROM user_groups WHERE GID = :gid)");
+    $group_users->execute([
+        ":gid" => $ID,
+    ]);
+    $group_membre = $group_users->fetchAll(PDO::FETCH_ASSOC);
+    ?>
 
 <div class="ui container">
-    <div class="profile-bg" style="background-image: url('/banners/groups/<?= $ID ?>');">
+    <div class="profile-bg" style="background-image: url('/banners/-1');">
         <div class="overlay"></div>
         <div class="profile">
             <div class="profile-data">
@@ -78,7 +84,7 @@
             
             <?php if ($self) echo "<a href=\"/settings/avatar\""?>
             <div class="p-avatar">
-                <img height="256" alt="avatar" src="/avatars/groups/<?= $ID ?>">
+                <img height="256" alt="avatar" src="/avatars/-1">
             </div>
             <?php if ($self) echo "</a>"?>
         </div>
@@ -130,7 +136,7 @@
                             </div>
                         </div>
                     </a>
-                <?php } } 
+                <?php } }                 
                 if($group["is_private"] && $name_asker){
                 if ($rank["rank"] == 1){
                     foreach ($name_asker as $ask){
@@ -154,7 +160,10 @@
 
                     }
                  }
-                }?>
+                }
+                if($rank){
+                    if($rank["rank"] == 1){
+                        }}?>
             </div>
         </div>
 
