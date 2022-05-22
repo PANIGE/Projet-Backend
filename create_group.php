@@ -5,6 +5,8 @@
     require_once("./php/generalHelper.php");
     GenerateHeader("register.jpg", "Create Group");
 
+    $ID = GetId();
+
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $Name    = filter_input(INPUT_POST, "groupname");
         $private = filter_input(INPUT_POST, "private");
@@ -27,6 +29,11 @@
                     ":name" => $Name,
                 ]);
                 $group_id = $GID->setFetchMode(PDO::FETCH_ASSOC);
+                $join_group = $pdo->prepare("INSERT INTO user_groups (GID, UID, rank, pending) value(:GID, :UID, 1, 0)");
+                $join_group->execute([
+                    ":GID"      => $group_id,
+                    ":UID"      => $ID,
+                ]);
                 header('location:/groups/'.$group_id);
             }
             else{
