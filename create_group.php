@@ -42,6 +42,7 @@
                     ':test' => 'test'
                 ]);
                 $group_id = $GID->setFetchMode(PDO::FETCH_ASSOC);
+                echo '<script> alert('.$group_id.');</script>';
             }
         }
     }

@@ -94,23 +94,10 @@
             </div>
         </div>
         <div class="score">
-            
             <script src="https://use.fontawesome.com/fe459689b4.js"></script>
-            <div class="ui labeled button mt-5 ml-5" tabindex="0">
-                <div class="ui blue button">
-                    <i class="fas fa-thumbs-up"></i>
-                </div>
-                <span class="ui basic blue label" id="up_counter" >0</span>
-            </div>
 
-            <script src="https://use.fontawesome.com/fe459689b4.js"></script>
-            <div class="ui labeled button mt-5 ml-5" tabindex="0">
-                <div class="ui red button">
-                    <i class="fas fa-thumbs-down"></i>
-                </div>
-                <span class="ui basic red label" id="down_counter" >0</span>
-            </div>
-
+            <button class="btn" id="green"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>
+            <button class="btn" id="red"><i class="fa fa-thumbs-down" aria-hidden="true"></i></i></button>
         </div>
 
 
@@ -125,14 +112,14 @@
             <!-- <div style="text-align:center"> -->
             <div class = "option">
                 <div class= "emote_section">
-                    <button type="button"  class= "emote" id = "happy">&#128512</button>
-                    <button type="button"  class= "emote" id = "angry">&#128544</button>
-                    <button type="button"  class= "emote" id = "sad">&#128542</button>
-                    <button type="button" class= "emote" id = "emotionless">&#128528</button>
+                    <button class= "emote" id = "happy">&#128512</button>
+                    <button class= "emote" id = "angry">&#128544</button>
+                    <button class= "emote" id = "sad">&#128542</button>
+                    <button class= "emote" id = "emotionless">&#128528</button>
                 </div>
                 
                 <button class="ui huge inverted blue button" type="submit" id="sbmt"> publish </button>
-            </div> 
+            </div>
 
         </form>
     </div>
@@ -150,8 +137,6 @@
 
         .red{color: red;}
         
-        .down_counter,.up_counter{cursor:pointer;}
-
         .emote{
             color:black;
             font-size: 1.5rem;
@@ -199,36 +184,6 @@
             <?php } ?>
 
     <?php } ?>
-
-<script>
-
-    const happy=document.getElementById("happy");
-    const angry=document.getElementById("angry");
-    const sad=document.getElementById("sad");
-    const emotionless=document.getElementById("emotionless");
-
-    var emote_text = [':)','>:(', ':(',':|'];
-
-    const commentary = document.getElementById('comment-content');
-                    
-    happy.onclick = () => commentary.value = commentary.value + emote_text[0];
-    angry.onclick = () => commentary.value = commentary.value + emote_text[1];
-    sad.onclick = () => commentary.value = commentary.value +emote_text[2];
-    emotionless.onclick = () => commentary.value = commentary.value + emote_text[3];
-
-    /*likes-dislikes : working progress*/
-
-    $('.button').click(function() {
-    $('.label').html(function(i, val) { 
-      return val*1+0.5
-        });
-    });
-
-    /*likes-dislikes : working progress*/
-
-
-</script>
-
 <script>
     function reply(id) {
         $('[id^="comment-"]').html("");
