@@ -5,26 +5,26 @@
     UpdateLastSeen();
 
     function GenerateHeader($header, $name, $hue=-100, $desc="Welcome to the Weeb version of Metaverse, METAVERSE 0, ULTRAVERSE 1") {
-        echo <<<EOL
+        ?>
                <html>
                <head>
                <style>
                      :root {
-               EOL;
+               <?php
                echo "--main-hue-theme: ".$hue."deg;";
-               echo <<<EOL
+               ?>
                      }
                </style>
                <meta charset="utf-8">
                <meta name="viewport" content="width=device-width, initial-scale=1">
-               EOL;
+               <?php
                echo "<title> ".$name." - Ultraverse</title>";
-               echo <<<EOL
+               ?>
                <link rel="icon" href="/static/favicon.ico">
                <meta property="og:type" content="website">
-               EOL;
+               <?php
                echo '<meta name="description" content="'.$desc.'">';
-               echo <<<EOL
+               ?>
                <meta name="msapplication-TileImage" content="/static/logos/logo2.png">
                <meta name="theme-color" content="#7f03fc">
                <meta name="robots" content="index, follow">
@@ -43,16 +43,16 @@
                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
                <body>
                <div class="background-image" 
-               EOL;
+               <?php
                echo 'style="background-image: url(\'/static/headers/'.$header.'\');"';
-               echo <<<EOL
+               ?>
                ></div>
                <div class="ui full height main wrapper">
                   <div class="ui secondary fixed-height stackable main menu no margin bottom" id="navbar">
                      <img navbar="" class="navbar-image" id="navimg" src="/static/assets/navbar.png">
                      <div class="nav2" style="display: none;"></div>
                      <div class="ui container responsive" id="navbarItems">
-            EOL;
+            <?php
 
 /* ------------------------------- LEFT ITEMS ------------------------------- */
                Logo();
@@ -76,14 +76,14 @@
                }
 /* -------------------------------------------------------------------------- */
 
-             echo <<<EOL
+             ?>
                      <div class="firetrucking-right-menu">
                         <div class="item">
                            <button class="search-button" onclick="search_click()">
                               <i class="search link icon"></i>
                            </button> 
                         </div>
-               EOL;
+               <?php
 
 /* ------------------------------- RIGHT ITEMS ------------------------------ */
                if (!IsLog()) {
@@ -101,7 +101,7 @@
                }
 /* -------------------------------------------------------------------------- */
 
-            echo <<<EOL
+            ?>
 
                      </div>
                         
@@ -109,18 +109,18 @@
                      <i class="big bars icon responsive-icon" onclick="if (!window.__cfRLUnblockHandlers) return false; hamburger()" ,="" id="hamburger-menu"></i>
                   </div>
                   <div class="huge heading  dropped" 
-           EOL;
+           <?php
            echo 'style="background-image: url(\'/static/headers/'.$header.'\');';
-           echo <<<EOL
+           ?>
                   ">
             
                   <div class="header-overlay"><i></i></div>
                   <div class="ui container">
                   <div class="main-bg-container"></div>
                   <h1>
-                  EOL;
+                  <?php
                   echo $name;
-                  echo <<<EOL
+                  ?>
                            </h1>
                         </div>
                               </div>
@@ -128,7 +128,7 @@
                                  <div class="ui margined container" id="messages-container">
                                     <noscript>Research has proven this website works 10000% better if you have JavaScript enabled.</noscript>
                                     <div class="information-message">Welcome to Ultraverse</div>
-                        EOL;
+                        <?php
                         if (isset($_GET["er"])) {
                            echo "<div class=\"ui error message\"><i class=\"close icon\"></i>".$_GET["er"]."</div>";
                         }
@@ -141,15 +141,15 @@
                            echo "<div class=\"ui success message\"><i class=\"close icon\"></i>".$_GET["es"]."</div>";
                         }
                         
-                        echo <<<EOL
+                        ?>
                                  </div>
                                  <div class="ui container">
-                  EOL;
+                  <?php
     }
 
 
     function GenerateFooter() {
-       echo <<<EOL
+       ?>
 
        </div>
        </div>
@@ -191,5 +191,5 @@
  
 
 </body></div></html>
-EOL;
+<?php
     }
