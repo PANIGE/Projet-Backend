@@ -54,18 +54,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             ':GID' => $GID,
         ]);
     }
-    if($type == 'Kick'){
-        $kick = $pdo->prepare("DELETE FROM user_groups WHERE UID = :UID AND GID = :GID");
-        $kick->execute([
-            ":UID" => $UID,
-            ":GID" => $GID,
-        ]);
-    }
-    if($type == 'Admin'){
-        $admin = $pdo->prepare("UPDATE user_groups SET rank = 1 WHERE UID = :UID AND GID = :GID");
+    if($type == 'name'){
+        $admin = $pdo->prepare("SELECT rank FROM user_groups WHERE UID = :UID");
         $admin->execute([
-            ':UID' => $UID,
-            ':GID' => $GID,
+            ':UID' => $SID,
         ]);
+        $Admin = $admin->fetchAll(PDO::FETCH_ASSOC);
+        if(Âdmin["rank"] == 1){
+            $name = $pdo->prepare("UPDATE groups SET name = :name WHERE id = :id");
+            $name->execute([
+                ':name' => $UID,
+                ':id' => $GID,
+            ]);
+        }
     }
 }
